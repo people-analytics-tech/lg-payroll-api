@@ -1,4 +1,3 @@
-from zeep import Client
 from zeep.helpers import serialize_object
 
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LGAuthentication
@@ -32,15 +31,25 @@ class LgApiCompanyClient(BaseLgServiceClient):
         #    companies_code = []
 
         params = {
-            "ListaDeCodigos": companies_code,
-            "ListaDeInscricoes": subscriptions_code
+            "FiltroDeEmpresaPorListaDeCodigoOuInscricao": {
+                "ListaDeCodigos": companies_code,
+                "ListaDeInscricoes": subscriptions_code
+            }
         }
+
         return serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ConsultarLista,
-                body={"FiltroDeEmpresaPorListaDeCodigoOuInscricao": params},
+                body=params,
             )
         )
     
     def retrieve_company(self, company_code: int, integration_code: str = None) -> dict:
-        return None
+        params = {
+            "Codigo": company_code,
+            "CodigoDeIntegracao": integration_code
+        }
+        return self.send_request(
+            service_client=self.wsdl_client.service.Consultar,
+            body=params,
+        )
