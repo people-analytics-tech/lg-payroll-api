@@ -1,9 +1,19 @@
-from zeep.helpers import serialize_object
 from datetime import date
 
+from zeep.helpers import serialize_object
+
+from lg_payroll_api.helpers.api_results import (
+    LgApiExecutionReturn,
+    LgApiPaginationReturn,
+    LgApiReturn,
+)
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
-from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiPaginationReturn, LgApiExecutionReturn
-from lg_payroll_api.utils.aux_types import SITUATIONS, EnumTipoDeDadosModificados, EnumTipoDeOperacaoContratoLog
+from lg_payroll_api.utils.aux_types import (
+    SITUATIONS,
+    EnumTipoDeDadosModificados,
+    EnumTipoDeOperacaoContratoLog,
+)
+
 
 class LgApiEmploymentContract(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
@@ -13,37 +23,47 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         body = {
             "Colaborador": {
                 "Matricula": contract_code,
-                "Empresa": {
-                    "Codigo": company_code
-                }
+                "Empresa": {"Codigo": company_code},
             }
         }
 
-        return LgApiReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.Consultar,
-                body=body,
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.Consultar,
+                    body=body,
+                )
             )
-        ))
+        )
 
     def list_on_demand(
         self,
         companies: list[int] = None,
         offices: list[tuple[int, int]] = None,
         employee_status: list[SITUATIONS] = None,
-        current_page: int = None
+        current_page: int = None,
     ) -> LgApiPaginationReturn:
         body = {
-            "Empresas": [{"FiltroComCodigoNumerico": {"Codigo": company}} for company in companies] if companies else None,
+            "Empresas": [
+                {"FiltroComCodigoNumerico": {"Codigo": company}}
+                for company in companies
+            ]
+            if companies
+            else None,
             "Estabelecimentos": [
                 {
                     "FiltroComCodigoNumericoEEmpresa": {
                         "Codigo": office[0],
-                        "Empresa": {"Codigo": office[1]}
+                        "Empresa": {"Codigo": office[1]},
                     }
-                } for office in offices
-            ] if offices else None,
-            "TiposDeSituacoes": [{"int": situation} for situation in employee_status] if employee_status else None,
+                }
+                for office in offices
+            ]
+            if offices
+            else None,
+            "TiposDeSituacoes": [{"int": situation} for situation in employee_status]
+            if employee_status
+            else None,
             "PaginaAtual": current_page,
         }
         return LgApiPaginationReturn(
@@ -63,22 +83,24 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         self,
         employee_code: str,
         employee_company_id: int,
-        situations_types: list[SITUATIONS] = None
+        situations_types: list[SITUATIONS] = None,
     ) -> LgApiReturn:
         body = {
             "TiposDeSituacoes": situations_types,
             "Colaborador": {
                 "Matricula": employee_code,
                 "Empresa": {"Codigo": employee_company_id},
-            }
+            },
         }
-        return LgApiReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsultarListaDeGestorImediato,
-                body=body,
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarListaDeGestorImediato,
+                    body=body,
+                )
             )
-        ))
-    
+        )
+
     def list_changed_contracts(
         self,
         company_code: int,
@@ -94,10 +116,13 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         enrollments: list[str] = None,
     ) -> LgApiReturn:
         body = {
-            "filtro":{
+            "filtro": {
                 "TiposDeSituacao": situation_type,
                 "TipoDeDadosModificados": modified_data_type,
-                "TiposDeOperacoes": [{"TipoDeOperacao": {"Valor": operation}} for operation in operations_types],
+                "TiposDeOperacoes": [
+                    {"TipoDeOperacao": {"Valor": operation}}
+                    for operation in operations_types
+                ],
                 "CodigoDaEmpresa": company_code,
                 "ListaDeMatriculas": enrollments,
                 "PeriodoDeBusca": {
@@ -106,13 +131,15 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 },
             }
         }
-        return LgApiReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsultarListaDeModificados,
-                body=body,
-                parse_body_on_request=True
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarListaDeModificados,
+                    body=body,
+                    parse_body_on_request=True,
+                )
             )
-        ))
+        )
 
     def insert_manager(
         self,
@@ -135,9 +162,7 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                     "Gestores": {
                         "FiltroComIdentificacaoDeContratoV2": {
                             "Matricula": manager_code,
-                            "Empresa": {
-                                "Codigo": manager_company_id
-                            },
+                            "Empresa": {"Codigo": manager_company_id},
                         }
                     },
                 }
@@ -147,12 +172,14 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 "DataFim": end_date.strftime("%Y-%m-%d") if end_date else None,
             },
         }
-        return LgApiExecutionReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.InserirGestoresNaFicha,
-                body=body
+        return LgApiExecutionReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.InserirGestoresNaFicha,
+                    body=body,
+                )
             )
-        ))
+        )
 
     def delete_manager(
         self,
@@ -168,16 +195,12 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 "FiltroDeAssociacaoContratoGestor": {
                     "Contrato": {
                         "Matricula": employee_code,
-                        "Empresa": {
-                            "Codigo": employee_company_id
-                        },
+                        "Empresa": {"Codigo": employee_company_id},
                     },
                     "Gestores": {
                         "FiltroComIdentificacaoDeContratoV2": {
                             "Matricula": manager_code,
-                            "Empresa": {
-                                "Codigo": manager_company_id
-                            },
+                            "Empresa": {"Codigo": manager_company_id},
                         }
                     },
                 }
@@ -187,9 +210,11 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 "DataFim": end_date if end_date else None,
             },
         }
-        return LgApiExecutionReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ExcluirGestoresNaFicha,
-                body=body,
+        return LgApiExecutionReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ExcluirGestoresNaFicha,
+                    body=body,
+                )
             )
-        ))
+        )

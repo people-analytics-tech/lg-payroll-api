@@ -1,15 +1,16 @@
 from lg_payroll_api.helpers import LgAuthentication
 from lg_payroll_api.scripts import (
+    LgApiCompanyClient,
     LgApiCostCenterClient,
+    LgApiEmployee,
     LgApiEmploymentContract,
     LgApiOrganizationalUnitClient,
-    LgApiCompanyClient,
-    LgApiEmployee
 )
 
 
 class LgPayrollApi:
     """Interface to access endpoints."""
+
     def __init__(self, auth: LgAuthentication) -> None:
         self.__auth: LgAuthentication = auth
 

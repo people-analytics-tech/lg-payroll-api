@@ -23,5 +23,5 @@ def clean_none_values_dict(data: dict) -> dict:
 
             else:
                 result[key] = value
-    
+
     return result
