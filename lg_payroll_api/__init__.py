@@ -3,7 +3,8 @@ from lg_payroll_api.scripts import (
     LgApiCostCenterClient,
     LgApiEmploymentContract,
     LgApiOrganizationalUnitClient,
-    LgApiCompanyClient
+    LgApiCompanyClient,
+    LgApiEmployee
 )
 
 
@@ -31,3 +32,8 @@ class LgPayrollApi:
     def company_service(self) -> LgApiCompanyClient:
         """Access companies service methods."""
         return LgApiCompanyClient(self.__auth)
+
+    @property
+    def employee_service(self) -> LgApiEmployee:
+        """Access employee service methods."""
+        return LgApiEmployee(self.__auth)
