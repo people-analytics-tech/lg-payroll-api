@@ -2,7 +2,6 @@ from zeep.helpers import serialize_object
 
 from lg_payroll_api.helpers.api_results import LgApiReturn
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
-from lg_payroll_api.utils.aux_functions import clean_none_values_dict
 
 
 class LgApiCompanyClient(BaseLgServiceClient):
@@ -42,7 +41,7 @@ class LgApiCompanyClient(BaseLgServiceClient):
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarLista,
-                    body=clean_none_values_dict(params),
+                    body=params,
                 )
             )
         )

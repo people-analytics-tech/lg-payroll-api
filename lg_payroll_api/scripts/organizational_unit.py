@@ -4,7 +4,6 @@ from zeep.helpers import serialize_object
 from typing import Literal
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiPaginationReturn
-from lg_payroll_api.utils.aux_functions import clean_none_values_dict
 from lg_payroll_api.utils.aux_types import EnumTipoDeDadosModificadosDaUnidadeOrganizacional, EnumTipoDeOperacao
 
 
@@ -17,7 +16,7 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(lg_auth=lg_auth, wsdl_service="v1/ServicoDeUnidadeOrganizacional")
 
-    def organizational_unit_list(
+    def consult_list(
         self,
         company_code: int,
         level: int = None,
@@ -56,12 +55,12 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
         return LgApiReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ConsultarLista,
-                body=clean_none_values_dict(params),
+                body=params,
                 parse_body_on_request=False
             )
         ))
     
-    def organizational_unit_list_on_demand(
+    def list_on_demand(
         self,
         company_code: int = None,
         level: int = None,
@@ -100,14 +99,20 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
             }
         }
 
-        return LgApiPaginationReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
-                body=clean_none_values_dict(params),
+        return LgApiPaginationReturn(
+            auth=self.lg_client,
+            wsdl_service=self.wsdl_client,
+            service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
+            body=params,
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
+                    body=params,
+                )
             )
-        ))
+        )
 
-    def changed_organizational_units_list(
+    def consult_changed_list(
         self,
         start_date: date,
         end_date: date,
@@ -151,7 +156,7 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
         return LgApiReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ConsultarListaDeUnidadesOrganizacionaisModificadas,
-                body=clean_none_values_dict(params),
+                body=params,
                 parse_body_on_request=True
             )
         ))

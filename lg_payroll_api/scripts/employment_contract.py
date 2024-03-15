@@ -4,13 +4,12 @@ from datetime import date
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiPaginationReturn, LgApiExecutionReturn
 from lg_payroll_api.utils.aux_types import SITUATIONS, EnumTipoDeDadosModificados, EnumTipoDeOperacaoContratoLog
-from lg_payroll_api.utils.aux_functions import clean_none_values_dict
 
 class LgApiEmploymentContract(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(lg_auth=lg_auth, wsdl_service="v2/ServicoDeContratoDeTrabalho")
 
-    def get_employment_contract(self, contract_code: str, company_code: int) -> LgApiReturn:
+    def consult(self, contract_code: str, company_code: int) -> LgApiReturn:
         body = {
             "Colaborador": {
                 "Matricula": contract_code,
@@ -23,23 +22,44 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         return LgApiReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.Consultar,
-                body=clean_none_values_dict(body),
+                body=body,
             )
         ))
 
-    def get_employment_contract_list_on_demand(self, employee_status: list[SITUATIONS] = None, current_page: int = None) -> LgApiPaginationReturn:
+    def list_on_demand(
+        self,
+        companies: list[int] = None,
+        offices: list[tuple[int, int]] = None,
+        employee_status: list[SITUATIONS] = None,
+        current_page: int = None
+    ) -> LgApiPaginationReturn:
         body = {
+            "Empresas": [{"FiltroComCodigoNumerico": {"Codigo": company}} for company in companies] if companies else None,
+            "Estabelecimentos": [
+                {
+                    "FiltroComCodigoNumericoEEmpresa": {
+                        "Codigo": office[0],
+                        "Empresa": {"Codigo": office[1]}
+                    }
+                } for office in offices
+            ] if offices else None,
             "TiposDeSituacoes": [{"int": situation} for situation in employee_status] if employee_status else None,
             "PaginaAtual": current_page,
         }
-        return LgApiPaginationReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsultarListaPorDemanda,
-                body=clean_none_values_dict(body),
+        return LgApiPaginationReturn(
+            auth=self.lg_client,
+            wsdl_service=self.wsdl_client,
+            service_client=self.wsdl_client.service.ConsultarListaPorDemanda,
+            body=body,
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarListaPorDemanda,
+                    body=body,
+                )
             )
-        ))
+        )
 
-    def get_employee_manager(
+    def consult_manager_list(
         self,
         employee_code: str,
         employee_company_id: int,
@@ -55,11 +75,11 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         return LgApiReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ConsultarListaDeGestorImediato,
-                body=clean_none_values_dict(body),
+                body=body,
             )
         ))
     
-    def get_updated_contracts(
+    def list_changed_contracts(
         self,
         company_code: int,
         start_date: date,
@@ -89,12 +109,12 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         return LgApiReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ConsultarListaDeModificados,
-                body=clean_none_values_dict(body),
+                body=body,
                 parse_body_on_request=True
             )
         ))
 
-    def post_employee_manager(
+    def insert_manager(
         self,
         employee_code: str,
         employee_company_id: int,
@@ -130,11 +150,11 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         return LgApiExecutionReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.InserirGestoresNaFicha,
-                body=clean_none_values_dict(body)
+                body=body
             )
         ))
 
-    def delete_employee_manager(
+    def delete_manager(
         self,
         employee_code,
         employee_company_id,
@@ -170,6 +190,6 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         return LgApiExecutionReturn(**serialize_object(
             self.send_request(
                 service_client=self.wsdl_client.service.ExcluirGestoresNaFicha,
-                body=clean_none_values_dict(body),
+                body=body,
             )
         ))
