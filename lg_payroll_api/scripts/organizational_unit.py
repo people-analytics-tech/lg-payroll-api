@@ -1,11 +1,14 @@
 from datetime import date
+from typing import Literal
+
 from zeep.helpers import serialize_object
 
-from typing import Literal
+from lg_payroll_api.helpers.api_results import LgApiPaginationReturn, LgApiReturn
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
-from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiPaginationReturn
-from lg_payroll_api.utils.aux_functions import clean_none_values_dict
-from lg_payroll_api.utils.aux_types import EnumTipoDeDadosModificadosDaUnidadeOrganizacional, EnumTipoDeOperacao
+from lg_payroll_api.utils.aux_types import (
+    EnumTipoDeDadosModificadosDaUnidadeOrganizacional,
+    EnumTipoDeOperacao,
+)
 
 
 class LgApiOrganizationalUnitClient(BaseLgServiceClient):
@@ -15,9 +18,11 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
     """
 
     def __init__(self, lg_auth: LgAuthentication):
-        super().__init__(lg_auth=lg_auth, wsdl_service="v1/ServicoDeUnidadeOrganizacional")
+        super().__init__(
+            lg_auth=lg_auth, wsdl_service="v1/ServicoDeUnidadeOrganizacional"
+        )
 
-    def organizational_unit_list(
+    def consult_list(
         self,
         company_code: int,
         level: int = None,
@@ -50,18 +55,20 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
                 "FiltroComCodigoNumerico": {
                     "Codigo": company_code,
                 }
-            }
+            },
         }
 
-        return LgApiReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsultarLista,
-                body=clean_none_values_dict(params),
-                parse_body_on_request=False
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarLista,
+                    body=params,
+                    parse_body_on_request=False,
+                )
             )
-        ))
-    
-    def organizational_unit_list_on_demand(
+        )
+
+    def list_on_demand(
         self,
         company_code: int = None,
         level: int = None,
@@ -95,30 +102,38 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
                     "FiltroComCodigoNumerico": {
                         "Codigo": company_code,
                     }
-                } if company_code else None,
-                "PaginaAtual": page
+                }
+                if company_code
+                else None,
+                "PaginaAtual": page,
             }
         }
 
-        return LgApiPaginationReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
-                body=clean_none_values_dict(params),
+        return LgApiPaginationReturn(
+            auth=self.lg_client,
+            wsdl_service=self.wsdl_client,
+            service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
+            body=params,
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsulteListaPorDemanda,
+                    body=params,
+                )
             )
-        ))
+        )
 
-    def changed_organizational_units_list(
+    def consult_changed_list(
         self,
         start_date: date,
         end_date: date,
         operation_types: list[EnumTipoDeOperacao] = [
             EnumTipoDeOperacao.ALTERACAO.value,
             EnumTipoDeOperacao.INCLUSAO.value,
-            EnumTipoDeOperacao.EXCLUSAO.value
+            EnumTipoDeOperacao.EXCLUSAO.value,
         ],
         organizational_units_codes: list[int] = None,
         modified_data_type: EnumTipoDeDadosModificadosDaUnidadeOrganizacional = None,
-        consult_inferior_organizational_units: Literal[0, 1] = 0
+        consult_inferior_organizational_units: Literal[0, 1] = 0,
     ) -> LgApiReturn:
         """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
 
@@ -140,18 +155,22 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
                 "ListaDeCodigos": organizational_units_codes,
                 "TipoDeDadosModificados": modified_data_type,
                 "ConsultarUnidadesOrganizacionaisInferiores": consult_inferior_organizational_units,
-                "TiposDeOperacoes": [{"Operacao": {"Valor": operation}} for operation in operation_types],
+                "TiposDeOperacoes": [
+                    {"Operacao": {"Valor": operation}} for operation in operation_types
+                ],
                 "PeriodoDeBusca": {
                     "DataInicio": start_date.strftime("%Y-%m-%d"),
-                    "DataFim": end_date.strftime("%Y-%m-%d")
-                }
+                    "DataFim": end_date.strftime("%Y-%m-%d"),
+                },
             }
         }
 
-        return LgApiReturn(**serialize_object(
-            self.send_request(
-                service_client=self.wsdl_client.service.ConsultarListaDeUnidadesOrganizacionaisModificadas,
-                body=clean_none_values_dict(params),
-                parse_body_on_request=True
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarListaDeUnidadesOrganizacionaisModificadas,
+                    body=params,
+                    parse_body_on_request=True,
+                )
             )
-        ))
+        )

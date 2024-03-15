@@ -1,6 +1,5 @@
-from typing import Literal, List, Union, OrderedDict
 from enum import Enum
-
+from typing import Literal
 
 SITUATIONS = Literal["Afastamento", "Atividade normal", "Férias", "Recesso", "Rescisão"]
 

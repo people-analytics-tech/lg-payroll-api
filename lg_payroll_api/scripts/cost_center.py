@@ -18,9 +18,9 @@ class LgApiCostCenterClient(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(lg_auth=lg_auth, wsdl_service="v2/ServicoDeCentroDeCusto")
 
-    def find_cost_center(
+    def list_on_demand(
         self,
-        cc_code: str,
+        cc_code: str = None,
         permission_to_register: Literal[0, 1] = None,
         only_actives: Literal[0, 1] = None,
         company_code: int = None,
@@ -48,6 +48,10 @@ class LgApiCostCenterClient(BaseLgServiceClient):
             "PaginaAtual": page,
         }
         return LgApiPaginationReturn(
+            auth=self.lg_client,
+            wsdl_service=self.wsdl_client,
+            service_client=self.wsdl_client.service.ConsultarListaPorDemanda,
+            body=params,
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarListaPorDemanda,
@@ -56,7 +60,7 @@ class LgApiCostCenterClient(BaseLgServiceClient):
             )
         )
 
-    def cost_center_save(
+    def save(
         self,
         cost_center_inital_date: str,
         companies_code: list,

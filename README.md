@@ -60,7 +60,7 @@ lg_payroll_api: LgPayrollApi = LgPayrollApi(auth=auth)
 employees_contracts = (
     lg_payroll_api
     .employment_contract_service
-    .get_employment_contract_list_on_demand()
+    .list_on_demand()
 )
 ```
 
