@@ -75,12 +75,12 @@ class LgApiEmployee(BaseLgServiceClient):
                 "Person ids list has exceeded the limit of 50 items."
             )
 
-        body = {"ListaDePessoaId": [{"string": person_id} for person_id in person_ids]}
+        body = {"filtro": {"ListaDePessoaId": {"string": person_ids}}}
 
         return LgApiReturn(
             **serialize_object(
                 self.send_request(
-                    service_client=self.wsdl_client.service.ConsultarLista, body=body
+                    service_client=self.wsdl_client.service.ConsultarLista, body=body, parse_body_on_request=True
                 )
             )
         )
