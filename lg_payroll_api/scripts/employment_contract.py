@@ -15,6 +15,7 @@ from lg_payroll_api.utils.aux_types import (
     EnumTipoDeOperacaoContratoLog,
     EnumCampoDeBuscaDoContratoDeTrabalho,
 )
+from lg_payroll_api.utils.lg_exceptions import LgParameterListLimitException
 
 
 class LgApiEmploymentContract(BaseLgServiceClient):
@@ -63,6 +64,30 @@ class LgApiEmploymentContract(BaseLgServiceClient):
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarLista,
+                    body=body,
+                )
+            )
+        )
+    
+    def consult_list_by_company(
+        self,
+        company_code: int,
+        contracts_codes: list[str],
+    ) -> LgApiReturn:
+        
+        if len(contracts_codes) > 50:
+            raise LgParameterListLimitException(
+                "Person ids list has exceeded the limit of 50 items."
+            )
+
+        body = {
+            "CodigoDaEmpresa": company_code,
+            "ListaDeMatriculas": {"string": contracts_codes}
+        }
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarListaPorEmpresa,
                     body=body,
                 )
             )
