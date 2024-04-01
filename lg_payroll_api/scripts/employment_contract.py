@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Any, Literal
 
 from zeep.helpers import serialize_object
 
@@ -12,6 +13,7 @@ from lg_payroll_api.utils.aux_types import (
     SITUATIONS,
     EnumTipoDeDadosModificados,
     EnumTipoDeOperacaoContratoLog,
+    EnumCampoDeBuscaDoContratoDeTrabalho,
 )
 
 
@@ -31,6 +33,36 @@ class LgApiEmploymentContract(BaseLgServiceClient):
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.Consultar,
+                    body=body,
+                )
+            )
+        )
+
+    def consult_list(
+        self,
+        company_code: int,
+        search_field: EnumCampoDeBuscaDoContratoDeTrabalho = None,
+        search_value: str = None,
+        employee_type: Literal["Funcionário", "Autônomo"] = None,
+    ) -> LgApiReturn:
+        if (
+            search_field == None and not search_value == None
+            or search_value == None and not search_field == None
+        ):
+            raise ValueError("If search field is defined, you need to define a search value or vice versa.")
+
+        body = {
+            "Empresa": {
+                "FiltroComCodigoNumerico": {"Codigo": company_code}
+            },
+            "CampoDeBusca": search_field,
+            "TipoDoColaborador": employee_type,
+            "TermoDeBusca": search_value,
+        }
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarLista,
                     body=body,
                 )
             )

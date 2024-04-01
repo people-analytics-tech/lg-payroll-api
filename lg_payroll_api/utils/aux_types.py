@@ -41,3 +41,15 @@ class EnumOperacaoExecutada(int, Enum):
     EXCLUSAO = 4
     CADASTRO_EM_LOTE = 5
     VALIDACAO = 6
+
+
+class EnumCampoDeBuscaDoContratoDeTrabalho(int, Enum):
+    MATRICULA = 0
+    ID_PESSOA = 1
+    CPF = 2
+    IDENTIDADE = 3
+    RIC = 4
+    CTPS = 5
+    PIS = 6
+    TITULO_ELEITOR = 7
+    CNH = 8
