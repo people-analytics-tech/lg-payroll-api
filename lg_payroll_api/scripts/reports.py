@@ -23,8 +23,8 @@ class LgReportServiceClient(BaseLgServiceClient):
                 )
             )
         )
-    
-    def generate_report(self, company_code: int, report_parameters: list[dict], extra_filters: list[str]) -> LgApiAsyncExecutionReturn:
+
+    def generate_report(self, company_code: int, report_parameters: list[dict]) -> LgApiAsyncExecutionReturn:
         params = {
             "Empresa": {"Codigo": company_code},
             "Relatorios": [{"Relatorio": rep_param} for rep_param in report_parameters]
