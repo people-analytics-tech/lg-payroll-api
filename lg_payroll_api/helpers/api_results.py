@@ -10,24 +10,29 @@ from lg_payroll_api.utils.lg_exceptions import (
     LgErrorException,
     LgInconsistencyException,
     LgNotProcessException,
+    LgTaskExecutionException,
+    LgTaskCancelledException,
+    LgTaskNotRespondingException,
+    LgTaskCompletedWithInconsistenciesException,
+    LgTaskNotCompletedYetException
 )
+from requests import get, Response
+import re
 
 
 @dataclass
-class LgApiReturn:
+class BaseLgApiReturn:
     """This dataclass represents a Lg Api Return object
 
     Attr:
         Tipo (EnumTipoDeRetorno): The returnal type code
         Mensagens (OrderedDict[str, List[str]]): Messages of requisition
         CodigoDoErro (str): Error code
-        Retorno (Union[dict, OrderedDict, List[dict], List[OrderedDict], None]): Requisition result value
     """
 
     Tipo: EnumTipoDeRetorno
     Mensagens: OrderedDict[str, List[str]]
     CodigoDoErro: str
-    Retorno: Union[dict, OrderedDict, List[dict], List[OrderedDict], None]
 
     def __post_init__(self):
         self._raise_for_errors()
@@ -45,6 +50,19 @@ class LgApiReturn:
 
         elif self.Tipo == EnumTipoDeRetorno.NAO_PROCESSADO:
             raise LgNotProcessException(self.__unpacked_messages)
+
+
+@dataclass
+class LgApiReturn(BaseLgApiReturn):
+    """This dataclass represents a Lg Api Return object
+
+    Attr:
+        Tipo (EnumTipoDeRetorno): The returnal type code
+        Mensagens (OrderedDict[str, List[str]]): Messages of requisition
+        CodigoDoErro (str): Error code
+        Retorno (Union[dict, OrderedDict, List[dict], List[OrderedDict], None]): Requisition result value
+    """
+    Retorno: Union[dict, OrderedDict, List[dict], List[OrderedDict], None]
 
 
 @dataclass
@@ -141,3 +159,72 @@ class LgApiExecutionReturn(LgApiReturn):
     OperacaoExecutada: EnumOperacaoExecutada
     Codigo: str
     CodigoDeIntegracao: str
+
+
+@dataclass
+class LgApiAsyncExecutionReturn(BaseLgApiReturn):
+    IdTarefa: str
+
+
+@dataclass
+class LgApiAsyncConsultReturn(LgApiReturn):
+    """This dataclass represents a Lg Api Async Consult Return Return object
+
+    Attr:
+        Tipo (EnumTipoDeRetorno): The returnal type code
+        Mensagens (OrderedDict[str, List[str]]): Messages of requisition
+        CodigoDoErro (str): Error code
+        Retorno (Union[dict, OrderedDict, List[dict], List[OrderedDict], None]): Requisition result value
+        StatusProcessamento(int): Processing status code.
+    """
+    StatusProcessamento: int
+
+    def _raise_for_errors(self) -> None:
+        super()._raise_for_errors()
+
+        if self.StatusProcessamento == 3550: # Execution error
+            raise LgTaskExecutionException(self.__unpacked_messages)
+
+        elif self.StatusProcessamento == 3465: # Task cancelled
+            raise LgTaskCancelledException(self.__unpacked_messages)
+
+        elif self.StatusProcessamento == 14296: # Task not responding
+            raise LgTaskNotRespondingException(self.__unpacked_messages)
+
+        elif self.StatusProcessamento == 39470: # Task completed with errors
+            raise LgTaskCompletedWithInconsistenciesException(self.__unpacked_messages)
+    
+    def check_processing_completed(self) -> bool:
+        """Check if task process if completed."""
+        return self.StatusProcessamento == 3551
+    
+    def request_file(self, encoding: str = "ISO-8859-1") -> Response:
+        if not self.check_processing_completed():
+            raise LgTaskNotCompletedYetException(f"Task is not completed yet. Please, wait a few seconds and try again.")
+
+        response = get(self.Retorno["Url"], allow_redirects=True)
+        response.raise_for_status()
+
+        if encoding:
+            response.encoding = encoding
+
+        return response
+
+    def download_bytes_content(self) -> bytes:
+        return self.request_file().content
+
+    def download_file(self, file_path: str = None) -> str:
+        file_response = self.request_file()
+
+        if not file_path:
+            match = re.search(r"filename=(.+)$", file_response.headers.get("Content-Disposition"))
+
+            if not match:
+                raise ValueError("Error to define filename to this report.")
+
+            file_path = match.group(1)
+
+        with open(file_path, "wb") as f:
+            f.write(file_response.content)
+
+        return file_path

@@ -1,4 +1,5 @@
 # This module contains auxiliary functions to transform data
+import re
 
 
 def clean_none_values_dict(data: dict) -> dict:
@@ -25,3 +26,14 @@ def clean_none_values_dict(data: dict) -> dict:
                 result[key] = value
 
     return result
+
+
+def extract_file_extension(file_name: str) -> str:
+    pattern = r"\.([a-zA-Z0-9]+)$"
+    match = re.search(pattern, file_name)
+
+    if match:
+        return match.group(1)
+    
+    else:
+        return None
