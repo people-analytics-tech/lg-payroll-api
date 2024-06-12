@@ -1,5 +1,7 @@
 from dataclasses import InitVar, dataclass
 from typing import List, OrderedDict, Union
+from time import time, sleep
+from io import StringIO, BytesIO
 
 from zeep import Client
 from zeep.helpers import serialize_object
@@ -162,11 +164,6 @@ class LgApiExecutionReturn(LgApiReturn):
 
 
 @dataclass
-class LgApiAsyncExecutionReturn(BaseLgApiReturn):
-    IdTarefa: str
-
-
-@dataclass
 class LgApiAsyncConsultReturn(LgApiReturn):
     """This dataclass represents a Lg Api Async Consult Return Return object
 
@@ -210,10 +207,17 @@ class LgApiAsyncConsultReturn(LgApiReturn):
 
         return response
 
-    def download_bytes_content(self) -> bytes:
+    def file_as_bytes(self) -> bytes:
         return self.request_file().content
+    
+    def file_as_string_io(self, encoding: str = "ISO-8859-1") -> StringIO:
+        file_text = self.request_file(encoding=encoding).text
+        return StringIO(file_text)
+    
+    def file_as_bytes_io(self) -> BytesIO:
+        return BytesIO().read(self.file_as_bytes())
 
-    def download_file(self, file_path: str = None) -> str:
+    def download_file_locally(self, file_path: str = None) -> str:
         file_response = self.request_file()
 
         if not file_path:
@@ -228,3 +232,32 @@ class LgApiAsyncConsultReturn(LgApiReturn):
             f.write(file_response.content)
 
         return file_path
+
+
+@dataclass
+class LgApiAsyncExecutionReturn(BaseLgApiReturn):
+    IdTarefa: str
+    report_service_class: InitVar[BaseLgServiceClient] = None
+
+    def __post_init__(
+        self,
+        report_service_class
+    ):
+        self.report_service_class = report_service_class
+        super().__post_init__()
+
+    def wait_to_complete_process(self, time_window: int = 60, timeout: int = None) -> LgApiAsyncConsultReturn:
+        start_execution = time()
+        async_consult = self.report_service_class.consult_task(task_id=self.IdTarefa)
+
+        while not async_consult.check_processing_completed():
+            if timeout:
+                if (time() - start_execution) > timeout:
+                    raise Exception(f"Timeout when wait to complete process of task '{self.IdTarefa}'")
+
+            print(f"Report not completed yet. Waiting {time_window} seconds to check again...")
+            sleep(time_window)
+            async_consult = self.report_service_class.consult_task(self.IdTarefa)
+
+        print(f"Report successfully generated. Blob ulr: {async_consult.Retorno['Url']}")
+        return async_consult

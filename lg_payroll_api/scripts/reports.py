@@ -30,6 +30,7 @@ class LgReportServiceClient(BaseLgServiceClient):
             "Relatorios": [{"Relatorio": rep_param} for rep_param in report_parameters]
         }
         return LgApiAsyncExecutionReturn(
+            report_service_class=self,
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.GerarRelatorio,
@@ -64,6 +65,7 @@ class LgReportServiceClient(BaseLgServiceClient):
         }
 
         return LgApiAsyncExecutionReturn(
+            report_service_class=self,
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.GerarRelatorioPorNome,
