@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Literal
+from typing import Literal
 
 from zeep.helpers import serialize_object
 
@@ -11,9 +11,9 @@ from lg_payroll_api.helpers.api_results import (
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 from lg_payroll_api.utils.aux_types import (
     SITUATIONS,
+    EnumCampoDeBuscaDoContratoDeTrabalho,
     EnumTipoDeDadosModificados,
     EnumTipoDeOperacaoContratoLog,
-    EnumCampoDeBuscaDoContratoDeTrabalho,
 )
 from lg_payroll_api.utils.lg_exceptions import LgParameterListLimitException
 
@@ -47,15 +47,17 @@ class LgApiEmploymentContract(BaseLgServiceClient):
         employee_type: Literal["Funcionário", "Autônomo"] = None,
     ) -> LgApiReturn:
         if (
-            search_field == None and not search_value == None
-            or search_value == None and not search_field == None
+            search_field == None
+            and not search_value == None
+            or search_value == None
+            and not search_field == None
         ):
-            raise ValueError("If search field is defined, you need to define a search value or vice versa.")
+            raise ValueError(
+                "If search field is defined, you need to define a search value or vice versa."
+            )
 
         body = {
-            "Empresa": {
-                "FiltroComCodigoNumerico": {"Codigo": company_code}
-            },
+            "Empresa": {"FiltroComCodigoNumerico": {"Codigo": company_code}},
             "CampoDeBusca": search_field,
             "TipoDoColaborador": employee_type,
             "TermoDeBusca": search_value,
@@ -68,13 +70,13 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 )
             )
         )
-    
+
     def consult_list_by_company(
         self,
         company_code: int,
         contracts_codes: list[str],
     ) -> LgApiReturn:
-        
+
         if len(contracts_codes) > 50:
             raise LgParameterListLimitException(
                 "Person ids list has exceeded the limit of 50 items."
@@ -82,7 +84,7 @@ class LgApiEmploymentContract(BaseLgServiceClient):
 
         body = {
             "CodigoDaEmpresa": company_code,
-            "ListaDeMatriculas": {"string": contracts_codes}
+            "ListaDeMatriculas": {"string": contracts_codes},
         }
         return LgApiReturn(
             **serialize_object(

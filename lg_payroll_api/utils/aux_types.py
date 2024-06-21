@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Literal
 
 SITUATIONS = Literal["Afastamento", "Atividade normal", "Férias", "Recesso", "Rescisão"]
+Bool = Literal[0, 1]
 
 
 class EnumTipoDeDadosModificados(int, Enum):
@@ -53,3 +54,40 @@ class EnumCampoDeBuscaDoContratoDeTrabalho(int, Enum):
     PIS = 6
     TITULO_ELEITOR = 7
     CNH = 8
+
+
+# Reports Enums
+
+
+class EnumTipoArquivoRelatorio(int, Enum):
+    PDF = 0
+    TXT = 1
+    CSV = 2
+
+
+class EnumTipoGrupoDeParametrosRelatorio(int, Enum):
+    PARAMETRO_DE_USUARIO = 0
+    SENTENCA_SIMPLES = 1
+    SENTENCA_DINAMICA = 2
+
+
+class EnumOperacaoParametroRelatorio(int, Enum):
+    IGUAL = 0
+    DIFERENTE = 1
+    MAIOR = 2
+    MENOR = 3
+    MAIOR_IGUAL = 4
+    MENOR_IGUAL = 5
+    UM_DOS_VALORES = 6
+    NAO_UM_DOS_VALORES = 7
+
+
+class EnumTipoDeDadoParametroRelatorio(int, Enum):
+    FDT_CHAR = 0
+    FDT_SHORT = 1
+    FDT_INT = 2
+    FDT_FLOAT = 3
+    FDT_DATE_AMD = 4
+    FDT_DATE_AM = 5
+    FDT_BOOLEAN = 6
+    FDT_DATE_SQL = 7
