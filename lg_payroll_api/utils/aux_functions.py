@@ -1,4 +1,8 @@
 # This module contains auxiliary functions to transform data
+import json
+import re
+from os import path
+from typing import Union
 
 
 def clean_none_values_dict(data: dict) -> dict:
@@ -25,3 +29,24 @@ def clean_none_values_dict(data: dict) -> dict:
                 result[key] = value
 
     return result
+
+
+def extract_file_extension(file_name: str) -> str:
+    pattern = r"\.([a-zA-Z0-9]+)$"
+    match = re.search(pattern, file_name)
+
+    if match:
+        return match.group(1)
+
+    else:
+        return None
+
+
+def read_json_file(file_path: str) -> Union[dict, list[dict]]:
+    if not path.exists(file_path):
+        raise FileNotFoundError(f"File not found. {file_path}")
+
+    with open(file_path, "r") as f:
+        data = json.loads(f.read())
+
+    return data

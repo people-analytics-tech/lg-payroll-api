@@ -80,7 +80,9 @@ class LgApiEmployee(BaseLgServiceClient):
         return LgApiReturn(
             **serialize_object(
                 self.send_request(
-                    service_client=self.wsdl_client.service.ConsultarLista, body=body, parse_body_on_request=True
+                    service_client=self.wsdl_client.service.ConsultarLista,
+                    body=body,
+                    parse_body_on_request=True,
                 )
             )
         )
