@@ -1,14 +1,15 @@
-from dataclasses import dataclass, is_dataclass, field
+from dataclasses import dataclass, field, fields, is_dataclass
 from datetime import date, datetime
+
+from zeep.client import Factory
 
 from lg_payroll_api.utils.aux_types import (
     Bool,
     EnumOperacaoParametroRelatorio,
     EnumTipoArquivoRelatorio,
     EnumTipoDeDadoParametroRelatorio,
-    EnumTipoGrupoDeParametrosRelatorio
+    EnumTipoGrupoDeParametrosRelatorio,
 )
-from zeep.client import Factory
 
 
 class ServiceParametersAdapter:
@@ -18,7 +19,7 @@ class ServiceParametersAdapter:
 
     @classmethod
     def match_args(cls) -> dict:
-        match_arguments: list = list(cls.__match_args__)
+        match_arguments: list = [_field.name for _field in fields(cls)]
         parameters = cls.__annotations__
         result: dict = {cls.__name__: match_arguments}
 
@@ -37,8 +38,7 @@ class ServiceParametersAdapter:
         return result
 
     def as_dict(self, obj_factory: Factory = None) -> dict:
-        """Generate dictionary of objects configured to use as report parameters
-        """
+        """Generate dictionary of objects configured to use as report parameters"""
         parameters = self.__class__.__annotations__
         record = {}
         for key, value in parameters.items():
@@ -49,7 +49,7 @@ class ServiceParametersAdapter:
             if is_dataclass(value) and param_value:
                 if hasattr(param_value, "as_dict"):
                     record[key] = param_value.as_dict()
-                
+
                 else:
                     record[key] = param_value
 
@@ -65,7 +65,7 @@ class ServiceParametersAdapter:
                         record_list.append(val)
                         if isinstance(val, str):
                             list_key = "string"
-                        
+
                         else:
                             list_key = val.__class__.__name__
 
@@ -86,8 +86,8 @@ class ServiceParametersAdapter:
 
 @dataclass
 class NestedDataClass:
-    """Aux dataclass to work with dataclasses attributes into anothers dataclasses
-    """
+    """Aux dataclass to work with dataclasses attributes into anothers dataclasses"""
+
     def __post_init__(self):
         self.__nested_objs()
 
@@ -104,7 +104,7 @@ class NestedDataClass:
 
                 elif isinstance(param_value, list):
                     self.__dict__[key] = [args(**item) for item in param_value]
-            
+
             if value == date and isinstance(param_value, datetime):
                 self.__dict__[key] = param_value.date()
 
@@ -156,17 +156,22 @@ class GrupoDeParametros(NestedDataClass, ServiceParametersAdapter):
 @dataclass
 class Relatorio(NestedDataClass, ServiceParametersAdapter):
     """Report data. Used to define report parameters."""
+
     Id: str
     Nome: str
     DescricaoRelatorio: str
     TipoArquivoGerado: EnumTipoArquivoRelatorio
-    TiposDeArquivosDisponiveisParaGeracao: list[EnumTipoArquivoRelatorio] = field(default_factory=list)
+    TiposDeArquivosDisponiveisParaGeracao: list[EnumTipoArquivoRelatorio] = field(
+        default_factory=list
+    )
     GruposDeParametros: list[GrupoDeParametros] = field(default_factory=list)
     GruposDeOrdenacao: list[str] = field(default_factory=list)
     GrupoDeOrdenacaoPadrao: str = None
     GrupoDeOrdenacaoSelecionado: str = None
     ExtensaoRelatorioGerado: str = None
-    
+
     def __post_init__(self):
-        self.TiposDeArquivosDisponiveisParaGeracao = [str(item) for item in self.TiposDeArquivosDisponiveisParaGeracao]
+        self.TiposDeArquivosDisponiveisParaGeracao = [
+            str(item) for item in self.TiposDeArquivosDisponiveisParaGeracao
+        ]
         return super().__post_init__()
