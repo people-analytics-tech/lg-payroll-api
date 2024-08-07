@@ -23,16 +23,12 @@ class LgApiRelativesClient(BaseLgServiceClient):
         """
 
         body = {
-            "FiltroComCpf": {
                 "Cpf": cpf
             }
-        }
 
         return LgApiReturn(
             **serialize_object(
                 self.send_request(
-                    auth=self.lg_client,
-                    wsdl_service=self.wsdl_client,
                     service_client=self.wsdl_client.service.ConsultarListaPeloCpfColaborador,
                     body=body
                 )
