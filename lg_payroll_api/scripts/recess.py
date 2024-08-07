@@ -1,7 +1,7 @@
 from datetime import datetime
 from zeep.helpers import serialize_object
 
-from lg_payroll_api.helpers.api_results import LgApiPaginationReturn
+from lg_payroll_api.helpers.api_results import LgApiReturn
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 
 class LgApiRecessClient(BaseLgServiceClient):
@@ -14,7 +14,7 @@ class LgApiRecessClient(BaseLgServiceClient):
         registration_list: list[str],
         start_date: datetime,
         end_date: datetime,
-    ) -> LgApiPaginationReturn:
+    ) -> LgApiReturn:
         """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
 
         Endpoint to get the list of recess occurrences for multiple contracts in LG System
@@ -26,11 +26,10 @@ class LgApiRecessClient(BaseLgServiceClient):
             end_date (datetime): End date of the period to query for recesses
 
         Returns:
-            LgApiPaginationReturn: A List of OrderedDict that represents an Object(RetornoDeConsultaLista<Recesso>) API response
+            LgApiReturn: An OrderedDict that represents an Object(RetornoDeConsultaLista<Recesso>) API response
         """
 
         params = {
-            "FiltroComIdentificacaoDeContratoColetivoEPeriodo": {
                 "CodigoDaEmpresa": company_code,
                 "ListaDeMatriculas": registration_list,
                 "Periodo": {
@@ -38,13 +37,8 @@ class LgApiRecessClient(BaseLgServiceClient):
                     "EndDate": end_date.strftime('%Y-%m-%d')
                 },
             }
-        }
 
-        return LgApiPaginationReturn(
-            auth=self.lg_client,
-            wsdl_service=self.wsdl_client,
-            service_client=self.wsdl_client.service.ConsultarListaParaVariosContratos,
-            body=params,
+        return LgApiReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarListaParaVariosContratos,
