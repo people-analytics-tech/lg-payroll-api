@@ -6,7 +6,7 @@ from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentica
 
 class LgApiOffWorkClient(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
-        super().__init__(lg_auth=lg_auth, wsdl_service="v2/ServicoDeDependente")
+        super().__init__(lg_auth=lg_auth, wsdl_service="v2/ServicoDeAfastamento")
 
     def list_off_work(
         self,
