@@ -6,6 +6,7 @@ from lg_payroll_api.scripts import (
     LgApiEmploymentContract,
     LgApiOrganizationalUnitClient,
     LgReportServiceClient,
+    LgApiOffWorkClient,
     ReportParameters,
 )
 
@@ -40,6 +41,11 @@ class LgPayrollApi:
     def employee_service(self) -> LgApiEmployee:
         """Access employee service methods."""
         return LgApiEmployee(self.__auth)
+    
+    @property
+    def off_work_service(self) -> LgApiOffWorkClient:
+        """Access off work service methods."""
+        return LgApiOffWorkClient(self.__auth)
 
     @property
     def report_service(self) -> LgReportServiceClient:
