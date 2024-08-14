@@ -5,10 +5,10 @@ from lg_payroll_api.scripts import (
     LgApiEmployee,
     LgApiEmploymentContract,
     LgApiOrganizationalUnitClient,
+    LgApiVacationServiceClient,
     LgReportServiceClient,
     ReportParameters,
 )
-
 
 class LgPayrollApi:
     """Interface to access endpoints."""
@@ -41,6 +41,11 @@ class LgPayrollApi:
         """Access employee service methods."""
         return LgApiEmployee(self.__auth)
 
+    @property
+    def vacation_service(self) -> LgApiVacationServiceClient:
+        """Access vacation service methods."""
+        return LgApiVacationServiceClient(self.__auth)
+    
     @property
     def report_service(self) -> LgReportServiceClient:
         """Access report generator service methods."""
