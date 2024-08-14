@@ -30,12 +30,14 @@ class LgApiVacationClient(BaseLgServiceClient):
         """
 
         params = {
+            "filtro":{
                     "CodigoDaEmpresa": company_code,
                     "ListaDeMatriculas": registration_list,
                     "Periodo": {
                         "StartDate": start_date.strftime('%Y-%m-%d'),
                         "EndDate": end_date.strftime('%Y-%m-%d')
                     },
+            }
         }
 
         return LgApiReturn(
