@@ -101,6 +101,10 @@ class LgApiPaginationReturn(LgApiReturn):
         page_key: str = "PaginaAtual",
     ):
         self.NumeroDaPagina += 1
+        self.TotalDePaginas = (
+            0 if not self.TotalDePaginas
+            else self.TotalDePaginas
+        )
         self.TotalDePaginas += 1
         self._base_lg_service = BaseLgServiceClient(
             lg_auth=auth, wsdl_service=wsdl_service
