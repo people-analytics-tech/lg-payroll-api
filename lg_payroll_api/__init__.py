@@ -7,6 +7,7 @@ from lg_payroll_api.scripts import (
     LgApiOrganizationalUnitClient,
     LgReportServiceClient,
     ReportParameters,
+    LgApiRoleClient,
 )
 
 
@@ -45,3 +46,8 @@ class LgPayrollApi:
     def report_service(self) -> LgReportServiceClient:
         """Access report generator service methods."""
         return LgReportServiceClient(self.__auth)
+
+    @property
+    def role_service(self) -> LgApiRoleClient:
+        """Access role service methods."""
+        return LgApiRoleClient(self.__auth)
