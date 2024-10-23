@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from zeep.client import Factory
 
-from lg_payroll_api.utils.aux_types import (
+from lg_payroll_api.utils.enums import (
     Bool,
     EnumOperacaoParametroRelatorio,
     EnumTipoArquivoRelatorio,

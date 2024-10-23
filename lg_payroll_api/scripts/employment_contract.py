@@ -9,7 +9,7 @@ from lg_payroll_api.helpers.api_results import (
     LgApiReturn,
 )
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
-from lg_payroll_api.utils.aux_types import (
+from lg_payroll_api.utils.enums import (
     SITUATIONS,
     EnumCampoDeBuscaDoContratoDeTrabalho,
     EnumTipoDeDadosModificados,
