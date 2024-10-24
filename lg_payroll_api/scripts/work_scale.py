@@ -7,7 +7,7 @@ from lg_payroll_api.helpers.api_results import (
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 
 
-class WorkScaleService(BaseLgServiceClient):
+class LgApiWorkScaleClient(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(lg_auth=lg_auth, wsdl_service="v2/ServicoDeEscala")
 

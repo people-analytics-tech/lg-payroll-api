@@ -52,7 +52,7 @@ class LgPayrollApi:
     def role_service(self) -> LgApiRoleClient:
         """Access role service methods."""
         return LgApiRoleClient(self.__auth)
-        
+
     @property
     def work_scale_service(self) -> LgWorkScaleService:
         """Access work scale service methods."""
