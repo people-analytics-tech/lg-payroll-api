@@ -91,3 +91,16 @@ class EnumTipoDeDadoParametroRelatorio(int, Enum):
     FDT_DATE_AM = 5
     FDT_BOOLEAN = 6
     FDT_DATE_SQL = 7
+
+
+class EnumCampoContato(int, Enum):
+    DDD_TELEFONE = 0
+    TELEFONE = 1
+    DDD_CELULAR = 2
+    CELULAR = 3
+    RAMAL = 4
+    EMAIL_CORPORATIVO = 5
+    EMAIL_PARTICULAR = 6
+    LINKEDIN = 7
+    FACEBOOK = 8
+    TWITTER = 9

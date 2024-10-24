@@ -9,7 +9,7 @@ from zeep import Client
 from zeep.helpers import serialize_object
 
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
-from lg_payroll_api.utils.aux_types import EnumOperacaoExecutada, EnumTipoDeRetorno
+from lg_payroll_api.utils.enums import EnumOperacaoExecutada, EnumTipoDeRetorno
 from lg_payroll_api.utils.lg_exceptions import (
     LgErrorException,
     LgInconsistencyException,
@@ -65,7 +65,20 @@ class LgApiReturn(BaseLgApiReturn):
         Retorno (Union[dict, OrderedDict, List[dict], List[OrderedDict], None]): Requisition result value
     """
 
-    Retorno: Union[dict, OrderedDict, List[dict], List[OrderedDict], None]
+    Retorno: Union[
+        dict,
+        OrderedDict,
+        List[dict],
+        List[OrderedDict],
+        None
+    ]
+
+
+@dataclass
+class LgApiExecReturn(BaseLgApiReturn):
+    OperacaoExecutada: int
+    Codigo: Union[int, None] = None
+    CodigoDeIntegracao: Union[str, None] = None
 
 
 @dataclass
