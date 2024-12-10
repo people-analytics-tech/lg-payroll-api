@@ -22,7 +22,7 @@ class ReportParameters:
     __rep_match_args: dict = None
 
     def __init__(self, parameters: Union[list[Relatorio], list[dict]]) -> None:
-        self.
+        self.reports: list[Relatorio] = []
         for arg in parameters:
             if isinstance(arg, dict):
                 self.reports.append(Relatorio(**arg))
