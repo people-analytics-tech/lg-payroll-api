@@ -7,7 +7,6 @@ from lg_payroll_api.utils.models import Relatorio
 class ReportParameters:
     """Aux class to configure report parameters to generate reports in LG system."""
 
-    reports: list[Relatorio] = []
     __from_to_keys = {
         "DtoRelatorio": "Relatorio",
         "EnumTipoArquivoGerado": "TipoArquivoGerado",
@@ -23,6 +22,7 @@ class ReportParameters:
     __rep_match_args: dict = None
 
     def __init__(self, parameters: Union[list[Relatorio], list[dict]]) -> None:
+        self.
         for arg in parameters:
             if isinstance(arg, dict):
                 self.reports.append(Relatorio(**arg))
