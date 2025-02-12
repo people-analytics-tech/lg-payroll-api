@@ -24,9 +24,11 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         additional_informations_codes: list[str] = None
     ) -> LgApiReturn:
         params = {
-            "TipoConceito": concept_type,
-            "IdentificadoresDoConceito": concept_codes,
-            "IdentificadoresInformacoesAdicionais": additional_informations_codes
+            "FiltroDeValorInfoAdicPorConceitoEInformacao": {
+                "TipoConceito": concept_type,
+                "IdentificadoresDoConceito": concept_codes,
+                "IdentificadoresInformacoesAdicionais": additional_informations_codes
+            }
         }
         return LgApiReturn(
             **serialize_object(
@@ -116,7 +118,7 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         cost_center_code: str = None,
         contract_code: str = None,
     ) -> LgApiExecutionReturn:
-        params = {
+        params = [{
             "ValorDaInformacaoAdicionalV2": {
                 "IdentificadorDaEntidade": {
                     "TipoEntidade": int(entity_type),
@@ -149,7 +151,7 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
                 "Codigo": code,
                 "Valor": value
             }
-        }
+        }]
 
         return LgApiExecutionReturn(
             **serialize_object(
