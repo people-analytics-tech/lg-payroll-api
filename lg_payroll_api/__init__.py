@@ -9,6 +9,7 @@ from lg_payroll_api.scripts import (
     ReportParameters,
     LgApiRoleClient,
     LgApiWorkScaleClient,
+    LgApiAdditionalInformationValueClient
 )
 
 
@@ -57,3 +58,7 @@ class LgPayrollApi:
     def work_scale_service(self) -> LgApiWorkScaleClient:
         """Access work scale service methods."""
         return LgApiWorkScaleClient(self.__auth)
+    
+    @property
+    def additional_information(self) -> LgApiAdditionalInformationValueClient:
+        return LgApiAdditionalInformationValueClient(self.__auth)
