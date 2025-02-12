@@ -62,32 +62,34 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
                 ]
         """
         params = {
-            "Identificador": {
-                "TipoEntidade": int(entity_type),
-                "InfoAdicCentroDeCusto": {
-                    "Codigo": cost_center_code,
-                    "CodigoEmpresa": company_code,
-                    "TipoEntidade": entity_type
-                },
-                "InfoAdicUnidadeOrganizacional": {
-                    "Codigo": org_unit_code,
-                    "CodigoEmpresa": company_code,
-                    "TipoEntidade": entity_type
-                },
-                "InfoAdicEstabelecimento": {
-                    "Codigo": office_code,
-                    "CodigoEmpresa": company_code,
-                    "TipoEntidade": entity_type
-                },
-                "InfoAdicContratoDeTrabalho": {
-                    "Matricula": contract_code,
-                    "CodigoEmpresa": company_code,
-                    "TipoEntidade": entity_type
-                },
-                "InfoAdicPosicao": {
-                    "Codigo": role_code,
-                    "CodigoEmpresa": company_code,
-                    "TipoEntidade": entity_type
+            "FiltroDeValorInfoAdicPorEntidade": {
+                "Identificador": {
+                    "TipoEntidade": int(entity_type) if entity_type else None,
+                    "InfoAdicCentroDeCusto": {
+                        "Codigo": cost_center_code,
+                        "CodigoEmpresa": company_code,
+                        "TipoEntidade": entity_type
+                    } if cost_center_code else None,
+                    "InfoAdicUnidadeOrganizacional": {
+                        "Codigo": org_unit_code,
+                        "CodigoEmpresa": company_code,
+                        "TipoEntidade": entity_type
+                    } if org_unit_code else None,
+                    "InfoAdicEstabelecimento": {
+                        "Codigo": office_code,
+                        "CodigoEmpresa": company_code,
+                        "TipoEntidade": entity_type
+                    } if office_code else None,
+                    "InfoAdicContratoDeTrabalho": {
+                        "Matricula": contract_code,
+                        "CodigoEmpresa": company_code,
+                        "TipoEntidade": entity_type
+                    } if contract_code else None,
+                    "InfoAdicPosicao": {
+                        "Codigo": role_code,
+                        "CodigoEmpresa": company_code,
+                        "TipoEntidade": entity_type
+                    } if role_code else None
                 }
             }
         }
