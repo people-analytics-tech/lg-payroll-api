@@ -150,3 +150,13 @@ class EnumTipoEntidadeInformacaoAdicional(int, Enum):
     OKR_OBJETIVO = 8001
     OKR_KEYRESULT = 8002
     OKR_INICIATIVA = 8003
+
+
+class EnumTipoDeInformacaoAdicional(int, Enum):
+    TEXTO = 0
+    VERDADEIRO_OU_FALSO = 1
+    NUMERO = 2
+    MOEDA = 3
+    DATA = 4
+    LISTA_SELECAO_UNICA = 5
+    LISTA_MULTIPLA_SELECAO = 6

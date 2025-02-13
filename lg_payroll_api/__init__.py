@@ -9,7 +9,8 @@ from lg_payroll_api.scripts import (
     ReportParameters,
     LgApiRoleClient,
     LgApiWorkScaleClient,
-    LgApiAdditionalInformationValueClient
+    LgApiAdditionalInformationValueClient,
+    LgApiAdditionalInformationClient
 )
 
 
@@ -60,5 +61,9 @@ class LgPayrollApi:
         return LgApiWorkScaleClient(self.__auth)
     
     @property
-    def additional_information(self) -> LgApiAdditionalInformationValueClient:
+    def additional_information_value(self) -> LgApiAdditionalInformationValueClient:
         return LgApiAdditionalInformationValueClient(self.__auth)
+
+    @property
+    def additional_information(self) -> LgApiAdditionalInformationClient:
+        return LgApiAdditionalInformationClient(self.__auth)

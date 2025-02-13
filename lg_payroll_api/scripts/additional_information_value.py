@@ -23,19 +23,20 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         concept_codes: list[str],
         additional_informations_codes: list[str] = None
     ) -> LgApiReturn:
-        params = {
-            "FiltroDeValorInfoAdicPorConceitoEInformacao": {
-                "TipoConceito": concept_type,
-                "IdentificadoresDoConceito": concept_codes,
-                "IdentificadoresInformacoesAdicionais": additional_informations_codes
-            }
-        }
+        if isinstance(concept_type, EnumTipoEntidadeInformacaoAdicional):
+            concept_type = concept_type.value
+
+        params = {"filtro": {
+            "TipoConceito": concept_type,
+            "IdentificadoresDoConceito": {"string": concept_codes},
+            "IdentificadoresInformacoesAdicionais": {"string": additional_informations_codes}
+        }}
         return LgApiReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsulteListaPorConceitoEInformacao,
                     body=params,
-                    parse_body_on_request=False,
+                    parse_body_on_request=True,
                 )
             )
         )
@@ -63,10 +64,13 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
                     Retorno : list[Object(UnidadeOrganizacionalParcial)]
                 ]
         """
+        if isinstance(entity_type, EnumTipoEntidadeInformacaoAdicional):
+            entity_type = entity_type.value
+
         params = {
-            "FiltroDeValorInfoAdicPorEntidade": {
+            "filtro": {
                 "Identificador": {
-                    "TipoEntidade": int(entity_type) if entity_type else None,
+                    "TipoEntidade": entity_type,
                     "InfoAdicCentroDeCusto": {
                         "Codigo": cost_center_code,
                         "CodigoEmpresa": company_code,
@@ -84,13 +88,13 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
                     } if office_code else None,
                     "InfoAdicContratoDeTrabalho": {
                         "Matricula": contract_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
+                        "CodigoEmpresa": company_code if company_code else None,
+                        "TipoEntidade": entity_type if contract_code else None
                     } if contract_code else None,
                     "InfoAdicPosicao": {
                         "Codigo": role_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
+                        "CodigoEmpresa": company_code if role_code else None,
+                        "TipoEntidade": entity_type if role_code else None
                     } if role_code else None
                 }
             }
@@ -101,7 +105,7 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarListaPorEntidade,
                     body=params,
-                    parse_body_on_request=False,
+                    parse_body_on_request=True,
                 )
             )
         )
@@ -118,47 +122,43 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         cost_center_code: str = None,
         contract_code: str = None,
     ) -> LgApiExecutionReturn:
-        params = [{
-            "ValorDaInformacaoAdicionalV2": {
-                "IdentificadorDaEntidade": {
-                    "TipoEntidade": int(entity_type),
-                    "InfoAdicCentroDeCusto": {
-                        "Codigo": cost_center_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
-                    },
-                    "InfoAdicUnidadeOrganizacional": {
-                        "Codigo": org_unit_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
-                    },
-                    "InfoAdicEstabelecimento": {
-                        "Codigo": office_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
-                    },
-                    "InfoAdicContratoDeTrabalho": {
-                        "Matricula": contract_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
-                    },
-                    "InfoAdicPosicao": {
-                        "Codigo": role_code,
-                        "CodigoEmpresa": company_code,
-                        "TipoEntidade": entity_type
-                    }
-                },
-                "Codigo": code,
-                "Valor": value
-            }
-        }]
+        if isinstance(entity_type, EnumTipoEntidadeInformacaoAdicional):
+            entity_type = entity_type.value
+
+        params = {"valores": {"ValorDaInformacaoAdicional": [{
+            "IdentificadorDaEntidade": {
+                "Identificador": entity_type,
+                "InfoAdicCentroDeCusto": {
+                    "Codigo": cost_center_code,
+                    "CodigoEmpresa": company_code,
+                } if cost_center_code else None,
+                "InfoAdicUnidadeOrganizacional": {
+                    "Codigo": org_unit_code,
+                    "CodigoEmpresa": company_code,
+                } if org_unit_code else None,
+                "InfoAdicEstabelecimento": {
+                    "Codigo": office_code,
+                    "CodigoEmpresa": company_code,
+                } if office_code else None,
+                "InfoAdicContratoDeTrabalho": {
+                    "Matricula": contract_code,
+                    "CodigoEmpresa": company_code,
+                } if contract_code else None,
+                "InfoAdicPosicao": {
+                    "Codigo": role_code,
+                    "CodigoEmpresa": company_code,
+                } if role_code else None
+            },
+            "Codigo": code,
+            "Valor": value
+        }]}}
 
         return LgApiExecutionReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.SalvarLista,
                     body=params,
-                    parse_body_on_request=False,
+                    parse_body_on_request=True,
                 )
             )
         )
