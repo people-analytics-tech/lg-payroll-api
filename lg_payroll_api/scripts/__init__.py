@@ -8,3 +8,4 @@ from lg_payroll_api.scripts.role import LgApiRoleClient
 from lg_payroll_api.scripts.work_scale import LgApiWorkScaleClient
 from lg_payroll_api.scripts.additional_information_value import LgApiAdditionalInformationValueClient
 from lg_payroll_api.scripts.additional_information import LgApiAdditionalInformationClient
+from lg_payroll_api.scripts.position import LgApiPositionClient

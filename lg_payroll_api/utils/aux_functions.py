@@ -13,11 +13,15 @@ def clean_none_values_dict(data: dict) -> dict:
         if value != None:
             if isinstance(value, dict):
                 result[key] = clean_none_values_dict(value)
+                if result[key] == {}:
+                    result[key] = None
 
             elif isinstance(value, list):
                 if len(value) > 0:
                     if isinstance(value[0], dict):
                         result[key] = [clean_none_values_dict(item) for item in value]
+                        if result[key] == []:
+                            result[key] = None
 
                     else:
                         result[key] = value

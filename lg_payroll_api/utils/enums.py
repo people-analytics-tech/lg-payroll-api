@@ -1,6 +1,14 @@
 from enum import Enum
 from typing import Literal
 
+
+def get_enum_value(value: Enum) -> int:
+    if isinstance(value, Enum):
+        value = value.value
+
+    return value
+
+
 SITUATIONS = Literal["Afastamento", "Atividade normal", "Férias", "Recesso", "Rescisão"]
 Bool = Literal[0, 1]
 
@@ -160,3 +168,57 @@ class EnumTipoDeInformacaoAdicional(int, Enum):
     DATA = 4
     LISTA_SELECAO_UNICA = 5
     LISTA_MULTIPLA_SELECAO = 6
+
+
+class EnumTipoStatus(int, Enum):
+    ATIVO = 0
+    INATIVO = 1
+    INATIVACAO_PROGRAMADA = 2
+    RESTRITO = -1111
+
+
+class EnumTipoPonto(int, Enum):
+    Manual = 1
+    Eletronico = 2
+
+
+class EnumGrauDeInstrucao(int, Enum):
+    NENHUM = 0
+    ANALFABETO = 1
+    ATEQUARTASERIEINCOMPLETAENSINOFUNDAMENTAL = 2
+    QUARTASERIECOMPLETAENSINO = 3
+    QUINTAOITAVAENSINOFUNDAMENTAL = 4
+    ENSINOFUNDAMENTALCOMPLETO = 5
+    ENSINOMEDIOINCOMPLETO = 6
+    ENSINOMEDIOCOMPLETO = 7
+    EDUCACAOSUPERIORINCOMPLETA = 8
+    EDUCACAOSUPERIORCOMPLETA = 9
+    POSGRADUACAOCOMPLETA = 10
+    DOUTORADOCOMPLETO = 11
+    SEGUNDO_GRAU_TECNICO_INCOMPLETO = 12
+    SEGUNDO_GRAU_TECNICO_COMPLETO = 13
+    MESTRADOCOMPLETO = 14
+    POS_DOUTORADO = 15
+
+
+class EnumMesesExperiencia(int, Enum):
+    TRES_MESES = 3
+    SEIS_MESES = 6
+    NOVE_MESES = 9
+    UM_ANO = 12
+    DOIS_ANOS = 24
+    TRES_ANOS = 36
+    QUATRO_ANOS = 48
+    CINCO_ANOS = 60
+    SEIS_ANOS = 72
+    SETE_ANOS = 84
+    OITO_ANOS = 96
+    NOVE_ANOS = 108
+    DEZ_ANOS = 120
+    QUINZE_ANOS = 180
+    VINTE_ANOS = 240
+
+
+class EnumModeloPosicao(int, Enum):
+    POSICAO_TEMPORARIA = 0
+    DUPLICAR_POSICAO = 1
