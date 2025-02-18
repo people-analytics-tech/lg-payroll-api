@@ -11,7 +11,7 @@ from lg_payroll_api.utils.enums import (
 class LgApiAdditionalInformationClient(BaseLgServiceClient):
     """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
 
-    Default class to connect with the organizational unit endpoints
+    Default class to connect with the additional information endpoints
     """
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(
@@ -23,7 +23,9 @@ class LgApiAdditionalInformationClient(BaseLgServiceClient):
         concept_code: EnumTipoEntidadeInformacaoAdicional,
         group_code: int = None,
         type: EnumTipoDeInformacaoAdicional = None,
-    ):
+    ) -> LgApiPaginationReturn:
+        """Consult list of additional information fields on demand
+        """
         if isinstance(concept_code, EnumTipoEntidadeInformacaoAdicional):
             concept_code = concept_code.value
 
