@@ -10,7 +10,8 @@ from lg_payroll_api.scripts import (
     LgApiRoleClient,
     LgApiWorkScaleClient,
     LgApiAdditionalInformationValueClient,
-    LgApiAdditionalInformationClient
+    LgApiAdditionalInformationClient,
+    LgApiPositionClient
 )
 
 
@@ -67,3 +68,7 @@ class LgPayrollApi:
     @property
     def additional_information(self) -> LgApiAdditionalInformationClient:
         return LgApiAdditionalInformationClient(self.__auth)
+    
+    @property
+    def position_service(self) -> LgApiPositionClient:
+        return LgApiPositionClient(self.__auth)
