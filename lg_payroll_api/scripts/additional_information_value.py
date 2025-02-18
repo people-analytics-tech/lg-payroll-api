@@ -10,7 +10,7 @@ from lg_payroll_api.utils.enums import (
 class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
     """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
 
-    Default class to connect with the organizational unit endpoints
+    Default class to connect with the additional information value endpoints
     """
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(
@@ -23,6 +23,16 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         concept_codes: list[str],
         additional_informations_codes: list[str] = None
     ) -> LgApiReturn:
+        """Consult additional information values filtering by concept type,
+        identifiers of concepts and identifiers of additional informations.
+
+        Args:
+            **concept_type _(EnumTipoEntidadeInformacaoAdicional, mandatory)_**: Additional
+            information type;
+            **concept_codes _(list[str], mandatory)_**: List of concept identifiers;
+            **additional_informations_codes _(list[str], optional)_**: List of identifiers
+            of additional informations.
+        """
         if isinstance(concept_type, EnumTipoEntidadeInformacaoAdicional):
             concept_type = concept_type.value
 
@@ -41,6 +51,7 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
             )
         )
 
+    # TODO fix the problem with payload sended
     def consult_list_by_entity(
         self,
         entity_type: EnumTipoEntidadeInformacaoAdicional = None,
@@ -51,17 +62,19 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         cost_center_code: str = None,
         contract_code: str = None,
     ) -> LgApiReturn:
-        """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
+        """**WARNING**: This method is not working yet.
 
-        Endpoint to get list of organizational units in LG System
+        LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
+
+        Endpoint to get list of additional informations values in LG System
 
         Returns:
-            LgApiReturn: A List of OrderedDict that represents an Object(RetornoDeConsultaLista<UnidadeOrganizacionalParcial>) API response
+            LgApiReturn: A List of OrderedDict that represents an Object(RetornoDeConsultaLista<ValorDaInformacaoAdicionalParcial>) API response
                 [
                     Tipo : int
                     Mensagens : [string]
                     CodigoDoErro : string
-                    Retorno : list[Object(UnidadeOrganizacionalParcial)]
+                    Retorno : list[Object(ValorDaInformacaoAdicionalParcial)]
                 ]
         """
         if isinstance(entity_type, EnumTipoEntidadeInformacaoAdicional):
@@ -110,6 +123,7 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
             )
         )
 
+    # TODO fix the problem with payload sended
     def save_additional_information_value(
         self,
         code: int,
@@ -122,6 +136,8 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         cost_center_code: str = None,
         contract_code: str = None,
     ) -> LgApiExecutionReturn:
+        """**WARNING**: This method is not working yet.
+        """
         if isinstance(entity_type, EnumTipoEntidadeInformacaoAdicional):
             entity_type = entity_type.value
 
