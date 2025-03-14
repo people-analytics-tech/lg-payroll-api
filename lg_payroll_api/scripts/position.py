@@ -160,12 +160,12 @@ class LgApiPositionClient(BaseLgServiceClient):
     
     def save(
         self,
-        code: int,
         description: str,
         status: EnumTipoStatus,
-        start_date: date,
-        type: int,
-        reason_code: int,
+        start_date: date = None,
+        type: int = None,
+        reason_code: int = None,
+        code: int = None,
         end_date: date = None,
         jobs_quantity: int = None,
         enable_employee_enrollment: bool = None,
