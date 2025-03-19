@@ -360,7 +360,9 @@ class LgApiPositionClient(BaseLgServiceClient):
                     "Descricao": original_position_description,
                     "Status": original_position_status,
                     "Codigo": original_position_code
-                }
+                },
+                "TransferirColaboradores": original_position_transfer_employees,
+                "Contexto": replication_context
             } if replicate_positions else None,
             "Descricao": description,
             "Status": status,
