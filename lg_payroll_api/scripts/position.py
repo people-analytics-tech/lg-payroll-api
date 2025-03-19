@@ -160,12 +160,12 @@ class LgApiPositionClient(BaseLgServiceClient):
     
     def save(
         self,
-        code: int,
         description: str,
         status: EnumTipoStatus,
-        start_date: date,
-        type: int,
-        reason_code: int,
+        start_date: date = None,
+        type: int = None,
+        reason_code: int = None,
+        code: int = None,
         end_date: date = None,
         jobs_quantity: int = None,
         enable_employee_enrollment: bool = None,
@@ -360,7 +360,9 @@ class LgApiPositionClient(BaseLgServiceClient):
                     "Descricao": original_position_description,
                     "Status": original_position_status,
                     "Codigo": original_position_code
-                }
+                },
+                "TransferirColaboradores": original_position_transfer_employees,
+                "Contexto": replication_context
             } if replicate_positions else None,
             "Descricao": description,
             "Status": status,
