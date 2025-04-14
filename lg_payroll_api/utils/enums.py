@@ -113,6 +113,12 @@ class EnumCampoContato(int, Enum):
     FACEBOOK = 8
     TWITTER = 9
 
+class EnumIdentificadorInformacaoAdicional(str ,Enum):
+    CENTRO_DE_CUSTO = "InfoAdicCentroDeCusto"
+    POSICAO = "InfoAdicPosicao"
+    DEPARTAMENTO = "InfoAdicUnidadeOrganizacional"
+    ESTABELECIMENTO = "InfoAdicEstabelecimento"
+    CONTRATO_DE_TRABALHO = "InfoAdicContratoDeTrabalho"
 
 class EnumTipoEntidadeInformacaoAdicional(int, Enum):
     NENHUM = 0

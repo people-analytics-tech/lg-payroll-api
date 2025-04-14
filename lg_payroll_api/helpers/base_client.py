@@ -1,5 +1,5 @@
 from typing import Union
-
+from decouple import config
 from requests import Session
 from zeep import Client, Transport
 from zeep.plugins import HistoryPlugin
@@ -18,11 +18,12 @@ class BaseLgServiceClient:
         self,
         lg_auth: LgAuthentication,
         wsdl_service: Union[str, Client],
-        requests_history: bool = False,
+        requests_history: bool = True,
     ):
         super().__init__()
         self.requests_history = HistoryPlugin() if requests_history else None
         self.lg_client = lg_auth
+        self.lg_dto = config("LG_API_DTO")
         if isinstance(wsdl_service, Client):
             self.wsdl_client: Client = wsdl_service
 
