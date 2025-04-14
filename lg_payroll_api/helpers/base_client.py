@@ -18,7 +18,7 @@ class BaseLgServiceClient:
         self,
         lg_auth: LgAuthentication,
         wsdl_service: Union[str, Client],
-        requests_history: bool = True,
+        requests_history: bool = False,
     ):
         super().__init__()
         self.requests_history = HistoryPlugin() if requests_history else None
