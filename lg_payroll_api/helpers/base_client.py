@@ -3,7 +3,7 @@ from decouple import config
 from requests import Session
 from zeep import Client, Transport
 from zeep.plugins import HistoryPlugin
-
+from lg_payroll_api.utils.settings import LG_API_DTO
 from lg_payroll_api.helpers.authentication import LgAuthentication
 from lg_payroll_api.utils.aux_functions import clean_none_values_dict
 
@@ -23,7 +23,7 @@ class BaseLgServiceClient:
         super().__init__()
         self.requests_history = HistoryPlugin() if requests_history else None
         self.lg_client = lg_auth
-        self.lg_dto = config("LG_API_DTO")
+        self.lg_dto = LG_API_DTO
         if isinstance(wsdl_service, Client):
             self.wsdl_client: Client = wsdl_service
 
