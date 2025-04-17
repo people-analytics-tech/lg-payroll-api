@@ -1,6 +1,6 @@
 from typing import Union
-from decouple import config
-from requests import Session
+from requests import Session, HTTPAdapter
+from urllib3.util.retry import Retry
 from zeep import Client, Transport
 from zeep.plugins import HistoryPlugin
 from lg_payroll_api.utils.settings import LG_API_DTO
@@ -28,10 +28,21 @@ class BaseLgServiceClient:
             self.wsdl_client: Client = wsdl_service
 
         elif isinstance(wsdl_service, str):
+            session = Session()
+            adapter = HTTPAdapter(
+                pool_connections=20,
+                pool_maxsize=20,   
+                max_retries=Retry(
+                    total=5,           
+                    backoff_factor=0.5,
+                    status_forcelist=[502, 503, 504],
+                )
+            )
+            session.mount("https://", adapter)
             self.wsdl_client: Client = Client(
                 wsdl=f"{self.lg_client.base_url}/{wsdl_service}?wsdl",
                 plugins=[self.requests_history] if self.requests_history else None,
-                transport=Transport(session=Session()),
+                transport=Transport(session=session),
             )
 
         else:
