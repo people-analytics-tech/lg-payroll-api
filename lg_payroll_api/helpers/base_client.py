@@ -1,5 +1,6 @@
 from typing import Union
-from requests import Session, HTTPAdapter
+from requests import Session
+from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from zeep import Client, Transport
 from zeep.plugins import HistoryPlugin
