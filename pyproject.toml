@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lg-payroll-api"
-version = "0.1.13"
+version = "0.1.14"
 description = ""
 authors = ["stone_people_analytics <systems-techpeople@stone.com.br>"]
 maintainers = [
