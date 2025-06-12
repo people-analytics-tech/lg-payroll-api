@@ -3,7 +3,6 @@ from zeep.helpers import serialize_object
 
 from lg_payroll_api.helpers.api_results import (
     LgApiReturn,
-    LgApiExecReturn,
     LgApiSaveListReturn
 )
 from lg_payroll_api.helpers.base_client import (
@@ -524,7 +523,7 @@ class LgApiMovementClient(BaseLgServiceClient):
         contract_code: str,
         company_code: int,
         occurrence_date: date,
-    ) -> LgApiExecReturn:
+    ) -> LgApiSaveListReturn:
         """
         Deletes a movement for a contract in the payroll system.
 
@@ -536,20 +535,16 @@ class LgApiMovementClient(BaseLgServiceClient):
         Returns:
             LgApiExecReturn: The result of the movement deletion operation.
         """
-        body = [
-            {
-                "FiltroComIdentificacaoDeContratoEDataDaOcorrencia": {
-                    "IdentificacaoDoContrato": {
-                        "IdentificacaoDeContrato": {
-                            "Matricula": contract_code,
-                            "Empresa": {"Codigo": company_code},
-                        },
-                        "DataOcorrencia": occurrence_date.strftime("%Y-%m-%d"),
-                    }
-                }
+        body = {
+            "IdentificacaoDoContrato": {
+                "IdentificacaoDeContrato": {
+                    "Matricula": contract_code,
+                    "Empresa": {"Codigo": company_code},
+                },
+                "DataOcorrencia": occurrence_date.strftime("%Y-%m-%d"),
             }
-        ]
-        return LgApiExecReturn(
+        }
+        return LgApiSaveListReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.ExcluirLista,

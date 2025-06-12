@@ -7,7 +7,6 @@ from zeep.plugins import HistoryPlugin
 from lg_payroll_api.utils.settings import LG_API_DTO
 from lg_payroll_api.helpers.authentication import LgAuthentication
 from lg_payroll_api.utils.aux_functions import clean_none_values_dict
-from lxml import etree
 
 
 class BaseLgServiceClient:
@@ -20,7 +19,7 @@ class BaseLgServiceClient:
         self,
         lg_auth: LgAuthentication,
         wsdl_service: Union[str, Client],
-        requests_history: bool = True,
+        requests_history: bool = False,
     ):
         super().__init__()
         self.requests_history = HistoryPlugin() if requests_history else None
@@ -65,7 +64,5 @@ class BaseLgServiceClient:
 
         else:
             response = service_client(body, _soapheaders=self.lg_client.auth_header)
-        
-        print(etree.tostring(self.requests_history.last_sent['envelope'], pretty_print=True).decode("utf-8"))
 
         return response
