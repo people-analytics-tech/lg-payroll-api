@@ -13,7 +13,7 @@ from lg_payroll_api.scripts import (
     LgApiAdditionalInformationClient,
     LgApiPositionClient,
     LgApiMovementClient,
-    LgApiOfficeLocalClient
+    LgApiOfficeLocalClient,
 )
 
 
