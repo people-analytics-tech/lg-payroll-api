@@ -6,8 +6,8 @@ from zeep import Client, Transport
 from zeep.plugins import HistoryPlugin
 from lg_payroll_api.utils.settings import LG_API_DTO
 from lg_payroll_api.helpers.authentication import LgAuthentication
+from lg_payroll_api.helpers.envelope_logger import EnvelopeLogger
 from lg_payroll_api.utils.aux_functions import clean_none_values_dict
-
 
 class BaseLgServiceClient:
     """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
@@ -19,10 +19,9 @@ class BaseLgServiceClient:
         self,
         lg_auth: LgAuthentication,
         wsdl_service: Union[str, Client],
-        requests_history: bool = False,
     ):
         super().__init__()
-        self.requests_history = HistoryPlugin() if requests_history else None
+        self.envelope_logger = EnvelopeLogger(HistoryPlugin())
         self.lg_client = lg_auth
         self.lg_dto = LG_API_DTO
         if isinstance(wsdl_service, Client):
@@ -42,7 +41,7 @@ class BaseLgServiceClient:
             session.mount("https://", adapter)
             self.wsdl_client: Client = Client(
                 wsdl=f"{self.lg_client.base_url}/{wsdl_service}?wsdl",
-                plugins=[self.requests_history] if self.requests_history else None,
+                plugins=[self.envelope_logger.requests_history],
                 transport=Transport(session=session),
             )
 
@@ -64,5 +63,5 @@ class BaseLgServiceClient:
 
         else:
             response = service_client(body, _soapheaders=self.lg_client.auth_header)
-
+        self.envelope_logger.log_envelope("request")
         return response
