@@ -39,5 +39,3 @@ class EnvelopeLogger:
         tag = match.group("tag")
         attrs = match.group("attrs")
         return f"<{prefixo}{tag}{attrs}>XXXXXX</{prefixo}{tag}>"
-
-    
