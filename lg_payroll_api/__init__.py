@@ -12,6 +12,7 @@ from lg_payroll_api.scripts import (
     LgApiAdditionalInformationValueClient,
     LgApiAdditionalInformationClient,
     LgApiPositionClient,
+    LgApiMovementClient,
     LgApiOfficeLocalClient
 )
 
@@ -77,3 +78,8 @@ class LgPayrollApi:
     @property
     def office_local_service(self) -> LgApiOfficeLocalClient:
         return LgApiOfficeLocalClient(self.__auth)
+
+    @property
+    def movement_service(self) -> LgApiMovementClient:
+        """Access movement service methods."""
+        return LgApiMovementClient(self.__auth)

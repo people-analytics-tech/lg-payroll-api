@@ -54,3 +54,10 @@ def read_json_file(file_path: str) -> Union[dict, list[dict]]:
         data = json.loads(f.read())
 
     return data
+
+
+def bool_to_int(value: bool) -> int:
+    if isinstance(value, bool):
+        value = int(value)
+
+    return value

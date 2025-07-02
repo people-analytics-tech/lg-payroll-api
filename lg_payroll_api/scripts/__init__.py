@@ -10,3 +10,4 @@ from lg_payroll_api.scripts.additional_information_value import LgApiAdditionalI
 from lg_payroll_api.scripts.additional_information import LgApiAdditionalInformationClient
 from lg_payroll_api.scripts.position import LgApiPositionClient
 from lg_payroll_api.scripts.office_local import LgApiOfficeLocalClient
+from lg_payroll_api.scripts.movement import LgApiMovementClient

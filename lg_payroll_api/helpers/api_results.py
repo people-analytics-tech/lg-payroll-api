@@ -82,6 +82,34 @@ class LgApiExecReturn(BaseLgApiReturn):
 
 
 @dataclass
+class LgApiSaveListReturn(BaseLgApiReturn):
+    """This dataclass represents a Lg Api Save List Return object
+
+    Attr:
+        Tipo (EnumTipoDeRetorno): The returnal type code
+        Mensagens (OrderedDict[str, List[str]]): Messages of requisition
+        CodigoDoErro (str): Error code
+        Retorno (Union[dict, OrderedDict, List[dict], List[OrderedDict], None]): Requisition result value
+        OperacaoExecutada (EnumOperacaoExecutada): Code of execution type
+    """
+
+    ListaDeRetorno: Union[
+        dict,
+        OrderedDict,
+        List[dict],
+        List[OrderedDict],
+        None
+    ]
+    IdentificadorDeOcorrencias: Union[
+        dict,
+        OrderedDict,
+        List[dict],
+        List[OrderedDict],
+        None
+    ] = None
+
+
+@dataclass
 class LgApiPaginationReturn(LgApiReturn):
     """This dataclass represents a Lg Api Pagination Return object
 
