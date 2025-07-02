@@ -11,7 +11,8 @@ from lg_payroll_api.scripts import (
     LgApiWorkScaleClient,
     LgApiAdditionalInformationValueClient,
     LgApiAdditionalInformationClient,
-    LgApiPositionClient
+    LgApiPositionClient,
+    LgApiOfficeLocalClient
 )
 
 
@@ -72,3 +73,7 @@ class LgPayrollApi:
     @property
     def position_service(self) -> LgApiPositionClient:
         return LgApiPositionClient(self.__auth)
+    
+    @property
+    def office_local_service(self) -> LgApiOfficeLocalClient:
+        return LgApiOfficeLocalClient(self.__auth)

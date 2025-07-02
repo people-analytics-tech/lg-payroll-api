@@ -197,7 +197,7 @@ class LgApiAsyncConsultReturn(LgApiReturn):
 
     def _raise_for_errors(self) -> None:
         super()._raise_for_errors()
-
+        
         if self.StatusProcessamento == 3550:  # Execution error
             raise LgTaskExecutionException(self._unpacked_messages)
 
