@@ -54,6 +54,7 @@ class BaseLgServiceClient:
         body: dict,
         parse_body_on_request: bool = False,
         send_none_values: bool = False,
+        show_envelope=True
     ):
         if not send_none_values:
             body = clean_none_values_dict(body)
@@ -63,5 +64,6 @@ class BaseLgServiceClient:
 
         else:
             response = service_client(body, _soapheaders=self.lg_client.auth_header)
-        self.envelope_logger.log_envelope("request")
+        if show_envelope:
+            self.envelope_logger.log_envelope("request")
         return response

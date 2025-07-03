@@ -28,6 +28,7 @@ class LgReportServiceClient(BaseLgServiceClient):
                 self.send_request(
                     service_client=self.wsdl_client.service.ConsultarTarefa,
                     body=params,
+                    show_envelope=False,
                 )
             )
         )
