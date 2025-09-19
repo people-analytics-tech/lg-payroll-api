@@ -38,7 +38,7 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 )
             )
         )
-    
+
     def consult_work_shift(self, contract_code: str, company_code: int) -> LgApiReturn:
         body = {
             "Colaborador": {
@@ -55,8 +55,6 @@ class LgApiEmploymentContract(BaseLgServiceClient):
                 )
             )
         )
-    
-    
 
     def consult_list(
         self,
