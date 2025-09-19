@@ -3,12 +3,14 @@ from typing import Literal
 
 from zeep.helpers import serialize_object
 
-from lg_payroll_api.helpers.api_results import LgApiPaginationReturn, LgApiReturn
+from lg_payroll_api.helpers.api_results import LgApiPaginationReturn, LgApiReturn, LgApiExecReturn
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 from lg_payroll_api.utils.enums import (
     EnumTipoDeDadosModificadosDaUnidadeOrganizacional,
     EnumTipoDeOperacao,
 )
+from lg_payroll_api.utils.enums import EnumTipoDeDepartamento, EnumTipoStatus, EnumTipoIdentificacaoGestor
+from lg_payroll_api.utils.aux_functions import bool_to_int
 
 
 class LgApiOrganizationalUnitClient(BaseLgServiceClient):
@@ -20,6 +22,108 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
     def __init__(self, lg_auth: LgAuthentication):
         super().__init__(
             lg_auth=lg_auth, wsdl_service="v1/ServicoDeUnidadeOrganizacional"
+        )
+    
+    def save(
+        self,
+        code: int,
+        description: str,
+        status: EnumTipoStatus,
+        company_code: int,
+        level: int,
+        start_date: date,
+        end_date: date = None,
+        parent_organizational_unit_code: int = None,
+        observation: str = None,
+        address_cep: str = None,
+        address_street_type_description: str = None,
+        address_street_type_code: int = None,
+        address_street: str = None,
+        address_number: str = None,
+        address_complement: str = None,
+        address_neighborhood: str = None,
+        address_city_code: str = None,
+        address_state_code: str = None,
+        address_country_code: str = None,
+        department_type: EnumTipoDeDepartamento = None,
+        allowed_companies_codes: list[int] = None,
+        allowed_offices_codes: list[int] = None,
+        short_description: str = None,
+        enable_employee_registration: bool = None,
+        manager_identification_type: EnumTipoIdentificacaoGestor = None,
+        manager_roles_codes: list[int] = None,
+        managers_positions_codes: list[int] = None,
+
+    ) -> LgApiExecReturn:
+        """LG API INFOS https://portalgentedesucesso.lg.com.br/api.aspx
+
+        Endpoint to save an organizational unit in LG System
+
+        Returns:
+            LgApiReturn: A List of OrderedDict that represents an Object(RetornoDeOperacao) API response
+                [
+                    Tipo : int
+                    Mensagens : [string]
+                    CodigoDoErro : string
+                    Retorno : string
+                ]
+        """
+        params = {
+            "Empresa":{"Codigo": company_code},
+            "Nivel": {"Codigo": level},
+            "DataFinal": end_date.strftime("%Y-%m-%d") if end_date else None,
+            "Observacao": observation,
+            "Endereco": {
+                "Cep": address_cep,
+                "TipoDeLogradouro": {
+                    "Descricao": address_street_type_description,
+                    "Codigo": address_street_type_code,
+                } if address_street_type_description or address_street_type_code else None,
+                "Logradouro": address_street,
+                "Numero": address_number,
+                "Complemento": address_complement,
+                "Bairro": address_neighborhood,
+                "Municipio": {
+                    "Codigo": address_city_code,
+                    "Estado": {
+                        "Codigo": address_state_code,
+                        "Pais": {"Codigo": address_country_code} if address_country_code else None,
+                    } if address_state_code or address_country_code else None,
+                } if address_city_code or address_state_code or address_country_code else None,
+            } if address_street or address_street_type_description else None,
+            "EnumTipoDeDepartamento": department_type,
+            "Habilitacoes": {
+                "Empresas": [
+                    {"Codigo": codigo} for codigo in allowed_companies_codes
+                ] if allowed_companies_codes else None,
+                "Cargos": [
+                    {"Codigo": codigo} for codigo in allowed_offices_codes
+                ] if allowed_offices_codes else None,
+            } if allowed_companies_codes or allowed_offices_codes else None,
+            "DescricaoResumida": short_description,
+            "PermiteCadastrarColaborador": bool_to_int(enable_employee_registration),
+            "IdentificacaoGestor": manager_identification_type,
+            "GestorCargo": [
+                {"Codigo": codigo} for codigo in manager_roles_codes
+            ] if manager_roles_codes else None,
+            "GestorPosicao": [
+                {"Codigo": codigo} for codigo in managers_positions_codes
+            ] if managers_positions_codes else None,
+            "UnidadeOrganizacionalSuperior": {"Codigo": parent_organizational_unit_code} if parent_organizational_unit_code else None,
+            "DataInicial": start_date.strftime("%Y-%m-%d"),
+            "Descricao": description,
+            "Status": status,
+            "Codigo": code,
+        }
+        
+        return LgApiExecReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.Salvar,
+                    body=params,
+                    parse_body_on_request=False,
+                )
+            )
         )
 
     def consult_list(
