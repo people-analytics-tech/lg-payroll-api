@@ -39,6 +39,23 @@ class LgApiEmploymentContract(BaseLgServiceClient):
             )
         )
 
+    def consult_work_shift(self, contract_code: str, company_code: int) -> LgApiReturn:
+        body = {
+            "Colaborador": {
+                "Matricula": contract_code,
+                "Empresa": {"Codigo": company_code},
+            }
+        }
+
+        return LgApiReturn(
+            **serialize_object(
+                self.send_request(
+                    service_client=self.wsdl_client.service.ConsultarEscala,
+                    body=body,
+                )
+            )
+        )
+
     def consult_list(
         self,
         company_code: int,

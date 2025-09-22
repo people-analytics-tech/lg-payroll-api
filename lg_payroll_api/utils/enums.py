@@ -273,3 +273,14 @@ class EnumFormaDePagamento(int, Enum):
     RECIBO = 11
     PAGAMENTO_TED = 12
     PAGAMENTO_DINHEIRO = 13
+
+
+class EnumTipoDeDepartamento(int, Enum):
+    NORMAL = 0
+    STAFF = 1
+
+
+class EnumTipoIdentificacaoGestor(int, Enum):
+    CARGO = 1016
+    POSICAO = 1030
+    COLABORADOR = 1079

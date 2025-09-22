@@ -255,6 +255,8 @@ class LgApiMovementClient(BaseLgServiceClient):
         timekeeping_required: bool = None,
         new_contract_type_code: str = None,
         observations: str = None,
+        class_description: str = None,
+        unlink_class: bool = None,
     ) -> LgApiSaveListReturn:
         """
         Registers a movement (transfer, update, or change) for a contract in the payroll system.
@@ -319,6 +321,8 @@ class LgApiMovementClient(BaseLgServiceClient):
             timekeeping_required (bool, optional): Whether timekeeping is required.
             new_contract_type_code (str, optional): Code of the new contract type.
             observations (str, optional): Additional observations.
+            class_description (str, optional): Description of the class.
+            unlink_class (bool, optional): Whether to unlink the class.
 
         Returns:
             LgApiExecReturn: The result of the movement registration operation.
@@ -490,6 +494,12 @@ class LgApiMovementClient(BaseLgServiceClient):
         if new_contract_type_code is not None:
             moved_items.append(factory_moved_items.ItemMovimentadoModalidadeContratual(
                 Codigo=new_contract_type_code,
+            ))
+        
+        if class_description is not None:
+            moved_items.append(factory_moved_items.ItemMovimentadoTurma(
+                Descricao=class_description,
+                Desvincular=bool_to_int(unlink_class),
             ))
 
         body = {
