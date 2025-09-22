@@ -44,6 +44,7 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
         address_neighborhood: str = None,
         address_city_code: str = None,
         address_state_code: str = None,
+        address_state_acronym: str = None,
         address_country_code: str = None,
         department_type: EnumTipoDeDepartamento = None,
         allowed_companies_codes: list[int] = None,
@@ -87,10 +88,11 @@ class LgApiOrganizationalUnitClient(BaseLgServiceClient):
                     "Codigo": address_city_code,
                     "Estado": {
                         "Codigo": address_state_code,
+                        "Sigla": address_state_acronym,
                         "Pais": {"Codigo": address_country_code} if address_country_code else None,
-                    } if address_state_code or address_country_code else None,
+                    } if address_state_code or address_state_acronym or address_country_code else None,
                 } if address_city_code or address_state_code or address_country_code else None,
-            } if address_street or address_street_type_description else None,
+            } if address_street or address_street_type_code else None,
             "EnumTipoDeDepartamento": department_type,
             "Habilitacoes": {
                 "Empresas": [
