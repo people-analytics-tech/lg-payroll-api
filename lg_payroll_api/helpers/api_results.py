@@ -183,6 +183,7 @@ class LgApiPaginationReturn(LgApiReturn):
                     self._base_lg_service.send_request(
                         service_client=self._service_client,
                         body=self._body,
+                        show_envelope=False,
                     )
                 )
             )
