@@ -175,3 +175,20 @@ class Relatorio(NestedDataClass, ServiceParametersAdapter):
             str(item) for item in self.TiposDeArquivosDisponiveisParaGeracao
         ]
         return super().__post_init__()
+
+
+@dataclass
+class FiltroDeLancamentoDeValorPorConceitoColetivo(
+    NestedDataClass, ServiceParametersAdapter
+):
+    """Filter for value posting by collective concept.
+
+    Used to query value postings by concept with various filter criteria.
+    """
+
+    Referencia: dict  # {"Mes": int, "Ano": int}
+    CodigoFolha: int = None  # type: ignore
+    CodigoSituacao: int = None  # type: ignore
+    TipoDoColaborador: list[int] = field(default_factory=list)
+    TipoDoConceito: int = None  # type: ignore
+    ListaDeCodigosDoConceito: list[str] = field(default_factory=list)
