@@ -291,12 +291,19 @@ class EnumTipoIdentificacaoGestor(int, Enum):
 class EnumTipoColaboradorLancamento(int, Enum):
     """Enum for employee type in value posting operations."""
 
-    TIPO_0 = 0
-    TIPO_1 = 1
-    TIPO_2 = 2
+    FUNCIONARIO = 0
+    AUTONOMO = 1
+    AMBOS = 2
 
 
 class EnumConceitosParaLancamentoDeValor(int, Enum):
     """Enum for concept types in value posting operations."""
 
-    CONCEITO_1028 = 1028
+    EMPRESA = 2
+    CENTRO_DE_CUSTO = 1000
+    NATUREZA_PROFISSIONAL = 1003
+    CARGO = 1016
+    SINDICATO = 1028
+    UNIDADE_ORGANIZACIONAL = 1031
+    ESTABELECIMENTO = 1032
+    ESCALA = 1060
