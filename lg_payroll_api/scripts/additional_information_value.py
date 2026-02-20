@@ -98,7 +98,6 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
             )
         )
 
-    # TODO fix the problem with payload sended
     def save_additional_information_value(
         self,
         additional_info_code: int,
@@ -106,10 +105,27 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         entity_code:int,
         company_code:int,
         entity_type: EnumIdentificadorInformacaoAdicional,
+        selected_options: list[str] = None
     ) -> LgApiExecutionReturn:
-        """**WARNING**: This method is not working yet.
+        """Save additional information value in LG System
+
+        Args:
+            additional_info_code (int, mandatory): Additional information identifier;
+            additional_info_value (str, mandatory): Value to be saved in the additional information;
+            entity_code (int, mandatory): Identifier of the entity related to the additional information value;
+            company_code (int, mandatory): Company code of the entity;
+            entity_type (EnumIdentificadorInformacaoAdicional, mandatory): Type of the entity;
+            selected_options (list[str], optional): List of selected options identifiers for the additional information value.
+
+        Returns:
+            LgApiExecutionReturn: An OrderedDict that represents an Object(RetornoDeExecucao) API response
+                {
+                    Tipo : int
+                    Mensagens : [string]
+                    CodigoDoErro : string
+                }
         """
-        if isinstance(entity_type, EnumTipoEntidadeInformacaoAdicional):
+        if isinstance(entity_type, EnumIdentificadorInformacaoAdicional):
             entity_type = entity_type.value
 
         #Get the complex type for the entity
@@ -121,25 +137,22 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         )
         # Create the payload with the complex type
         params = {
-            "filtro": {
-                "Identificador": identificador,
-                "Código do conceito": additional_info_code,
-                "Valor" : additional_info_value
-            }
+            "IdentificadorDaEntidade": identificador,
+            "Codigo": additional_info_code,
+            "Valor" : additional_info_value,
+            "OpcoesSelecionadas": selected_options
         }
         params = {
-            "valores": {
-                "ValorDaInformacaoAdicional": [
-                    params
-                ]
-            }
+            "ValorDaInformacaoAdicionalV2": [
+                params
+            ]
         }
         return LgApiExecutionReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.SalvarLista,
                     body=params,
-                    parse_body_on_request=True,
+                    parse_body_on_request=False,
                 )
             )
         )
