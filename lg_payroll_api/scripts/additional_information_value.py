@@ -1,6 +1,6 @@
 from zeep.helpers import serialize_object
 
-from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiExecutionReturn
+from lg_payroll_api.helpers.api_results import LgApiReturn, LgApiSaveListReturn
 from lg_payroll_api.helpers.base_client import BaseLgServiceClient, LgAuthentication
 from lg_payroll_api.utils.enums import (
     EnumTipoEntidadeInformacaoAdicional, EnumIdentificadorInformacaoAdicional
@@ -102,23 +102,23 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
         self,
         additional_info_code: int,
         additional_info_value: str,
-        entity_code:int,
-        company_code:int,
+        entity_code: int,
         entity_type: EnumIdentificadorInformacaoAdicional,
+        company_code: int = None,
         selected_options: list[str] = None
-    ) -> LgApiExecutionReturn:
+    ) -> LgApiSaveListReturn:
         """Save additional information value in LG System
 
         Args:
             additional_info_code (int, mandatory): Additional information identifier;
             additional_info_value (str, mandatory): Value to be saved in the additional information;
             entity_code (int, mandatory): Identifier of the entity related to the additional information value;
-            company_code (int, mandatory): Company code of the entity;
+            company_code (int, optional): Company code of the entity;
             entity_type (EnumIdentificadorInformacaoAdicional, mandatory): Type of the entity;
             selected_options (list[str], optional): List of selected options identifiers for the additional information value.
 
         Returns:
-            LgApiExecutionReturn: An OrderedDict that represents an Object(RetornoDeExecucao) API response
+            LgApiSaveListReturn: An OrderedDict that represents an Object(RetornoDeExecucao) API response
                 {
                     Tipo : int
                     Mensagens : [string]
@@ -140,14 +140,14 @@ class LgApiAdditionalInformationValueClient(BaseLgServiceClient):
             "IdentificadorDaEntidade": identificador,
             "Codigo": additional_info_code,
             "Valor" : additional_info_value,
-            "OpcoesSelecionadas": selected_options
+            "OpcoesSelecionadas": selected_options,
         }
         params = {
-            "ValorDaInformacaoAdicionalV2": [
+            "ValorDaInformacaoAdicional": [
                 params
             ]
         }
-        return LgApiExecutionReturn(
+        return LgApiSaveListReturn(
             **serialize_object(
                 self.send_request(
                     service_client=self.wsdl_client.service.SalvarLista,
