@@ -99,7 +99,7 @@ class LgApiSaveListReturn(BaseLgApiReturn):
         List[dict],
         List[OrderedDict],
         None
-    ]
+    ] = None
     IdentificadorDeOcorrencias: Union[
         dict,
         OrderedDict,
