@@ -1,19 +1,20 @@
 from lg_payroll_api.helpers import LgAuthentication
 from lg_payroll_api.scripts import (
+    LgApiAdditionalInformationClient,
+    LgApiAdditionalInformationValueClient,
     LgApiCompanyClient,
     LgApiCostCenterClient,
     LgApiEmployee,
     LgApiEmploymentContract,
-    LgApiOrganizationalUnitClient,
-    LgReportServiceClient,
-    ReportParameters,
-    LgApiRoleClient,
-    LgApiWorkScaleClient,
-    LgApiAdditionalInformationValueClient,
-    LgApiAdditionalInformationClient,
-    LgApiPositionClient,
+    LgApiLancamentoValorClient,
     LgApiMovementClient,
     LgApiOfficeLocalClient,
+    LgApiOrganizationalUnitClient,
+    LgApiPositionClient,
+    LgApiRoleClient,
+    LgApiWorkScaleClient,
+    LgReportServiceClient,
+    ReportParameters,
 )
 
 
@@ -62,7 +63,7 @@ class LgPayrollApi:
     def work_scale_service(self) -> LgApiWorkScaleClient:
         """Access work scale service methods."""
         return LgApiWorkScaleClient(self.__auth)
-    
+
     @property
     def additional_information_value(self) -> LgApiAdditionalInformationValueClient:
         return LgApiAdditionalInformationValueClient(self.__auth)
@@ -70,11 +71,11 @@ class LgPayrollApi:
     @property
     def additional_information(self) -> LgApiAdditionalInformationClient:
         return LgApiAdditionalInformationClient(self.__auth)
-    
+
     @property
     def position_service(self) -> LgApiPositionClient:
         return LgApiPositionClient(self.__auth)
-    
+
     @property
     def office_local_service(self) -> LgApiOfficeLocalClient:
         return LgApiOfficeLocalClient(self.__auth)
@@ -83,3 +84,8 @@ class LgPayrollApi:
     def movement_service(self) -> LgApiMovementClient:
         """Access movement service methods."""
         return LgApiMovementClient(self.__auth)
+
+    @property
+    def lancamento_valor_service(self) -> LgApiLancamentoValorClient:
+        """Access value posting service methods."""
+        return LgApiLancamentoValorClient(self.__auth)

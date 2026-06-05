@@ -113,12 +113,14 @@ class EnumCampoContato(int, Enum):
     FACEBOOK = 8
     TWITTER = 9
 
-class EnumIdentificadorInformacaoAdicional(str ,Enum):
+
+class EnumIdentificadorInformacaoAdicional(str, Enum):
     CENTRO_DE_CUSTO = "InfoAdicCentroDeCusto"
     POSICAO = "InfoAdicPosicao"
     DEPARTAMENTO = "InfoAdicUnidadeOrganizacional"
     ESTABELECIMENTO = "InfoAdicEstabelecimento"
     CONTRATO_DE_TRABALHO = "InfoAdicContratoDeTrabalho"
+
 
 class EnumTipoEntidadeInformacaoAdicional(int, Enum):
     NENHUM = 0
@@ -284,3 +286,24 @@ class EnumTipoIdentificacaoGestor(int, Enum):
     CARGO = 1016
     POSICAO = 1030
     COLABORADOR = 1079
+
+
+class EnumTipoColaboradorLancamento(int, Enum):
+    """Enum for employee type in value posting operations."""
+
+    FUNCIONARIO = 0
+    AUTONOMO = 1
+    AMBOS = 2
+
+
+class EnumConceitosParaLancamentoDeValor(int, Enum):
+    """Enum for concept types in value posting operations."""
+
+    EMPRESA = 2
+    CENTRO_DE_CUSTO = 1000
+    NATUREZA_PROFISSIONAL = 1003
+    CARGO = 1016
+    SINDICATO = 1028
+    UNIDADE_ORGANIZACIONAL = 1031
+    ESTABELECIMENTO = 1032
+    ESCALA = 1060
